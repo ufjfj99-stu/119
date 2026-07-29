@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7919迎新：地下城主戰術盤 - 巨龍棋局 D20</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=MedievalSharp&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0d0907;
+      --panel-bg: rgba(26, 18, 12, 0.92);
+      --card-bg: rgba(38, 26, 18, 0.85);
+      --parchment-gold: #d4af37;
+      --gold-bright: #f3cf65;
+      --gold-glow: rgba(212, 175, 55, 0.5);
+      --border-bronze: #8c6d3f;
+      --even-blue: #38bdf8;
+      --even-border: #0284c7;
+      --odd-red: #ef4444;
+      --odd-border: #b91c1c;
+      --text-gold: #f3e5ab;
+      --text-muted: #c2b280;
+      --dead-grey: #6b7280;
+      --debuff-purple: #c084fc;
+      --heal-green: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 30%, rgba(60, 20, 10, 0.4) 0%, rgba(10, 5, 2, 0.95) 100%),
+        repeating-linear-gradient(45deg, rgba(20, 12, 8, 0.5) 0px, rgba(20, 12, 8, 0.5) 2px, transparent 2px, transparent 10px);
+      color: var(--text-gold);
+      font-family: 'Noto Serif TC', 'Cinzel', Georgia, serif;
+      min-height: 100vh;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-family: 'Cinzel', 'MedievalSharp', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--gold-bright);
+      text-shadow: 0 0 15px rgba(243, 207, 101, 0.6), 2px 2px 4px #000;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .medieval-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 4px 0;
+      color: var(--parchment-gold);
+      font-size: 1rem;
+    }
+
+    .medieval-divider::before, .medieval-divider::after {
+      content: '';
+      height: 2px;
+      width: 100px;
+      background: linear-gradient(90deg, transparent, var(--border-bronze), transparent);
+    }
+
+    .board-container {
+      width: 100%;
+      max-width: 1420px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .title-even { color: var(--even-blue); }
+    .title-odd { color: var(--odd-red); }
+
+    .dice-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 8px;
+    }
+
+    .dice-card {
+      background: linear-gradient(180deg, rgba(45, 30, 20, 0.95) 0%, rgba(20, 14, 10, 0.95) 100%);
+      border: 2px solid var(--border-bronze);
+      border-radius: 8px;
+      padding: 6px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 4px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .dice-card.even { border-color: var(--even-border); }
+    .dice-card.odd { border-color: var(--odd-border); }
+
+    .dice-card:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.9);
+    }
+
+    .dice-number {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .dice-card.even .dice-number { color: var(--even-blue); }
+    .dice-card.odd .dice-number { color: var(--odd-red); }
+
+    .dice-name {
+      font-size: 0.75rem;
+      color: var(--text-gold);
+      font-weight: 700;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 2.3em;
+    }
+
+    /* BATTLE CENTER LAYOUT */
+    .battle-center-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr 320px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .teams-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .team-card {
+      background: linear-gradient(135deg, rgba(35, 23, 16, 0.95) 0%, rgba(18, 12, 8, 0.95) 100%);
+      border: 2px solid var(--border-bronze);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+    }
+
+    .team-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .team-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--gold-bright);
+    }
+
+    .team-status-tag {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .status-alive { background: rgba(34, 197, 94, 0.2); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .status-downed { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    .team-hp-container {
+      width: 100%;
+      height: 8px;
+      background: #000;
+      border-radius: 4px;
+      border: 1px solid var(--border-bronze);
+      overflow: hidden;
+    }
+
+    .team-hp-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #16a34a, #4ade80);
+      width: 100%;
+      transition: width 0.4s ease;
+    }
+
+    .team-stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px dashed rgba(212, 175, 55, 0.3);
+      font-size: 0.75rem;
+    }
+
+    .team-dmg-stat {
+      color: #fca5a5;
+      font-weight: bold;
+    }
+
+    .team-input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .team-input-group label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .dmg-input {
+      width: 100%;
+      background: rgba(10, 6, 4, 0.9);
+      border: 1px solid var(--border-bronze);
+      color: #fff;
+      padding: 4px;
+      border-radius: 4px;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    .btn-quick {
+      background: linear-gradient(180deg, rgba(80, 55, 30, 0.8) 0%, rgba(40, 25, 10, 0.8) 100%);
+      border: 1px solid var(--border-bronze);
+      color: var(--text-gold);
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+
+    /* DRAGON CENTER PANEL & INTERACTIVE CONTROLS */
+    .dragon-center {
+      background: radial-gradient(circle, rgba(45, 15, 10, 0.92) 0%, rgba(15, 8, 5, 0.98) 100%);
+      border: 3px double var(--parchment-gold);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+    }
+
+    .phase-banner {
+      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      border: 1px solid var(--border-bronze);
+    }
+
+    .phase-attack { background: rgba(185, 28, 28, 0.3); color: #fca5a5; border-color: #ef4444; }
+    .phase-defense { background: rgba(3, 105, 161, 0.3); color: #7dd3fc; border-color: #38bdf8; }
+
+    .dragon-header-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .dragon-avatar {
+      font-size: 2.8rem;
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    }
+
+    .dragon-info {
+      flex: 1;
+    }
+
+    .dragon-info h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--gold-bright);
+    }
+
+    .hp-bar-container {
+      width: 100%;
+      height: 20px;
+      background: #000;
+      border-radius: 10px;
+      border: 2px solid var(--border-bronze);
+      overflow: hidden;
+      position: relative;
+      margin-top: 4px;
+    }
+
+    .hp-bar {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #991b1b, #dc2626, #f59e0b);
+      transition: width 0.4s ease;
+    }
+
+    .hp-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 5px #000;
+    }
+
+    .status-panel {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-bronze);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--gold-bright);
+      border-bottom: 1px dashed var(--border-bronze);
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s;
+    }
+
+    .panel-subtitle:hover { color: #fff; }
+
+    .status-panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .buff-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+
+    .btn-modifier {
+      background: rgba(30, 20, 15, 0.9);
+      border: 1px solid var(--border-bronze);
+      color: var(--text-gold);
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-modifier.active {
+      background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%);
+      border-color: var(--debuff-purple);
+      color: #f3e8ff;
+      box-shadow: 0 0 8px rgba(192, 132, 252, 0.5);
+    }
+
+    .btn-heal {
+      background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+      border-color: var(--heal-green);
+      color: #ffffff;
+    }
+
+    .btn-heal:hover {
+      background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+    }
+
+    .active-status-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-height: 22px;
+    }
+
+    .active-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      background: rgba(192, 132, 252, 0.2);
+      color: #e9d5ff;
+      border: 1px solid rgba(192, 132, 252, 0.5);
+    }
+
+    .dragon-power-setting {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.4);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .dragon-power-input {
+      width: 65px;
+      background: rgba(0,0,0,0.8);
+      border: 1px solid var(--parchment-gold);
+      color: var(--gold-bright);
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 2px;
+    }
+
+    .dragon-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-bronze);
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-settle {
+      background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
+      color: var(--gold-bright);
+      border-color: var(--parchment-gold);
+    }
+
+    .btn-settle:hover {
+      background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
+      box-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .btn-switch-phase { background: rgba(255, 255, 255, 0.08); color: var(--text-gold); }
+    .btn-reset { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: #7f1d1d; }
+
+    /* MODAL POPUP */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+      z-index: 100; padding: 20px;
+    }
+
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .modal-content {
+      background: #f4e4bc;
+      background-image: radial-gradient(circle at 50% 50%, #f7eacc 0%, #e5cb93 100%);
+      border: 6px double #5c3d11;
+      border-radius: 10px;
+      width: 100%; max-width: 540px;
+      padding: 24px; position: relative; color: #2b1a08;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+      border-bottom: 2px solid #a67c38; padding-bottom: 10px;
+    }
+
+    .modal-dice-num {
+      font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 900;
+      width: 55px; height: 55px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .modal-dice-num.even { background: #0284c7; color: #fff; }
+    .modal-dice-num.odd { background: #b91c1c; color: #fff; }
+
+    .modal-title-box h3 {
+      font-family: 'Cinzel', 'Noto Serif TC', serif; font-size: 1.3rem; font-weight: 900; color: #422006;
+    }
+
+    .modal-tag {
+      display: inline-block; font-size: 0.75rem; padding: 2px 10px; border-radius: 10px; font-weight: 700; color: #fff;
+    }
+    .modal-tag.even { background: #0369a1; }
+    .modal-tag.odd { background: #991b1b; }
+
+    .modal-body { display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: #261605; }
+
+    .detail-block {
+      background: rgba(255, 255, 255, 0.45); border-left: 4px solid #8c5a1a; padding: 8px 12px; border-radius: 0 6px 6px 0;
+    }
+
+    .detail-block h4 { font-family: 'Cinzel', serif; font-size: 0.8rem; color: #713f12; margin-bottom: 2px; font-weight: 900; }
+
+    .close-btn {
+      position: absolute; top: 12px; right: 16px; background: transparent; border: none; color: #713f12; font-size: 1.6rem; font-weight: bold; cursor: pointer;
+    }
+
+    @media (max-width: 1200px) {
+      .battle-center-layout { grid-template-columns: 1fr; }
+      .teams-column { display: grid; grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .dice-grid { grid-template-columns: repeat(5, 1fr); }
+      .teams-column { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      .dice-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ===== 頁面內訊息面板 (取代 alert) ===== */
+    .msg-panel-container {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 460px;
+      padding: 0 16px;
+      pointer-events: none;
+    }
+
+    .msg-panel {
+      pointer-events: auto;
+      background: linear-gradient(180deg, rgba(38, 26, 18, 0.98) 0%, rgba(18, 12, 8, 0.98) 100%);
+      border: 2px solid var(--border-bronze);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(212,175,55,0.15);
+      padding: 12px 14px;
+      color: var(--text-gold);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(-12px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .msg-panel.show { opacity: 1; transform: translateY(0); }
+
+    .msg-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 0.85rem;
+    }
+
+    .msg-panel-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 2px;
+    }
+    .msg-panel-close:hover { color: #fff; }
+
+    .msg-panel-body { white-space: pre-line; }
+
+    .msg-panel.type-heal .msg-panel-header { color: var(--heal-green); }
+    .msg-panel.type-battle .msg-panel-header { color: #fca5a5; }
+    .msg-panel.type-success .msg-panel-header { color: #86efac; }
+    .msg-panel.type-fail .msg-panel-header { color: #fca5a5; }
+    .msg-panel.type-info .msg-panel-header { color: var(--gold-bright); }
+
+    .msg-panel.type-fail { border-color: #b91c1c; }
+    .msg-panel.type-success { border-color: #16a34a; }
+
+    /* ===== 自訂回血面板 (取代 prompt) ===== */
+    .heal-modal-content {
+      background: #f4e4bc;
+      background-image: radial-gradient(circle at 50% 50%, #f7eacc 0%, #e5cb93 100%);
+      border: 6px double #5c3d11;
+      border-radius: 10px;
+      width: 100%; max-width: 340px;
+      padding: 22px; color: #2b1a08;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+      text-align: center;
+    }
+
+    .heal-modal-content h3 {
+      font-family: 'Cinzel', serif; font-size: 1.1rem; color: #422006; margin-bottom: 14px;
+    }
+
+    .heal-modal-input {
+      width: 100px;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 6px;
+      border: 2px solid #8c5a1a;
+      border-radius: 6px;
+      background: #fff;
+      color: #2b1a08;
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .heal-modal-hint { font-size: 0.7rem; color: #8c6d3f; margin-bottom: 14px; }
+
+    .team-select-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+      margin-bottom: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .team-select-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(255,255,255,0.4);
+      border: 1px solid #b98d4a;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .team-select-item.downed { border-color: #b91c1c; background: rgba(239,68,68,0.15); }
+
+    .team-select-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+
+    .team-select-item-hp { font-size: 0.75rem; color: #713f12; }
+
+    .team-select-quick {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .team-select-quick button {
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      border: 1px solid #8c5a1a;
+      background: transparent;
+      color: #713f12;
+      cursor: pointer;
+    }
+
+    .team-select-quick button:hover { background: rgba(140, 90, 26, 0.15); }
+
+    .heal-modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+    .heal-modal-actions button {
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: 1px solid #8c5a1a;
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .heal-modal-confirm { background: #15803d; color: #fff; }
+    .heal-modal-cancel { background: transparent; color: #713f12; }
+
+    /* ===== 輸入防呆提示樣式 ===== */
+    .input-invalid { border-color: #ef4444 !important; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>⚔️ 7919 迎新：龍與地下城 ⚔️</h1>
+    <div class="medieval-divider">✦ D20 戰術盤 ✦</div>
+  </header>
+
+  <div class="board-container">
+    
+    <div>
+      <div class="section-title title-even" style="margin-bottom: 8px;">
+        🛡️ 上排：偶數點數 ── 巨龍防禦與結界模式 (Even)
+      </div>
+      <div class="dice-grid" id="evenGrid"></div>
+    </div>
+
+    <div class="battle-center-layout">
+      
+      <div class="teams-column">
+        <div class="team-card" id="card-1">
+          <div class="team-header">
+            <span class="team-name">第一騎士團</span>
+            <span class="team-status-tag status-alive" id="status-1">HP: 40/40</span>
+          </div>
+          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-1"></div></div>
+          <div class="team-stats-row">
+            <span class="team-dmg-stat" id="dmg-stat-1">⚔️ 累積造成傷害：0 HP</span>
+          </div>
+          <div class="team-input-group">
+            <label id="label-1">擲骰數值：</label>
+            <input type="number" class="dmg-input" id="input-1" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
+            <button class="btn-quick" onclick="addValue(1, 5)">+5</button>
+            <button class="btn-quick" onclick="addValue(1, 10)">+10</button>
+          </div>
+        </div>
+
+        <div class="team-card" id="card-2">
+          <div class="team-header">
+            <span class="team-name">第二騎士團</span>
+            <span class="team-status-tag status-alive" id="status-2">HP: 40/40</span>
+          </div>
+          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-2"></div></div>
+          <div class="team-stats-row">
+            <span class="team-dmg-stat" id="dmg-stat-2">⚔️ 累積造成傷害：0 HP</span>
+          </div>
+          <div class="team-input-group">
+            <label id="label-2">擲骰數值：</label>
+            <input type="number" class="dmg-input" id="input-2" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
+            <button class="btn-quick" onclick="addValue(2, 5)">+5</button>
+            <button class="btn-quick" onclick="addValue(2, 10)">+10</button>
+          </div>
+        </div>
+
+        <div class="team-card" id="card-3">
+          <div class="team-header">
+            <span class="team-name">第三騎士團</span>
+            <span class="team-status-tag status-alive" id="status-3">HP: 40/40</span>
+          </div>
+          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-3"></div></div>
+          <div class="team-stats-row">
+            <span class="team-dmg-stat" id="dmg-stat-3">⚔️ 累積造成傷害：0 HP</span>
+          </div>
+          <div class="team-input-group">
+            <label id="label-3">擲骰數值：</label>
+            <input type="number" class="dmg-input" id="input-3" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
+            <button class="btn-quick" onclick="addValue(3, 5)">+5</button>
+            <button class="btn-quick" onclick="addValue(3, 10)">+10</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dragon-center">
+        <div class="phase-banner phase-attack" id="phaseBanner">
+          🔥 第 1 回合：巨龍攻擊階段（小隊擲骰防禦）
+        </div>
+
+        <div class="dragon-header-box">
+          <div class="dragon-avatar">🐉</div>
+          <div class="dragon-info">
+            <h2>遠古紅龍 (Boss)</h2>
+            <div class="hp-bar-container">
+              <div class="hp-bar" id="hpBar"></div>
+              <div class="hp-text" id="hpText">生命值：300 / 300 HP</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-panel">
+          <div class="panel-subtitle" onclick="toggleStatusPanel()">
+            <span>✨ 戰術狀態與事件控制 <span id="toggleIcon">▶</span></span>
+            <span id="effectivePowerDisplay" style="color: var(--gold-bright);">目前威力: 15</span>
+          </div>
+
+          <div class="status-panel-body" id="statusPanelBody" style="display: none;">
+            <div class="dragon-power-setting">
+              <span id="powerLabel">巨龍基礎戰力：</span>
+              <input type="number" class="dragon-power-input" id="dragonPowerInput" value="15" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); updateCalculatedPower()" onblur="sanitizeInput(this,{min:0,max:999}); updateCalculatedPower()">
+            </div>
+
+            <div class="buff-btn-grid">
+              <button class="btn-modifier" id="btnAtkDebuff" onclick="toggleStatus('atkDebuff')">
+                📉 下次龍攻 -25%
+              </button>
+              <button class="btn-modifier" id="btnDefDebuff" onclick="toggleStatus('defDebuff')">
+                🛡️ 下次龍防 -25%
+              </button>
+              <button class="btn-modifier btn-heal" onclick="openTeamHealModal()">
+                💖 指定隊伍回血
+              </button>
+              <button class="btn-modifier btn-heal" onclick="customHeal()">
+                🩺 自訂龍回血
+              </button>
+              <button class="btn-modifier" id="btnPierce" onclick="toggleStatus('pierce')">
+                💥 破防直傷模式
+              </button>
+              <button class="btn-modifier" onclick="checkTotalSum65()">
+                🎲 檢定全場點數 >65
+              </button>
+            </div>
+          </div>
+
+          <div class="active-status-list" id="activeStatusList">
+            <span style="font-size: 0.7rem; color: #888;">無生效中的特殊狀態</span>
+          </div>
+        </div>
+
+        <div class="dragon-controls">
+          <button class="btn-action btn-settle" onclick="settleRound()">⚔️ 結算本回合攻防與傷害</button>
+          <button class="btn-action btn-switch-phase" onclick="togglePhase()">🔄 手動切換攻防階段</button>
+          <button class="btn-action btn-reset" onclick="resetBattle()">⚠️ 重置戰力與狀態</button>
+        </div>
+      </div>
+
+      <div class="teams-column">
+        <div class="team-card" id="card-4">
+          <div class="team-header">
+            <span class="team-name">第四騎士團</span>
+            <span class="team-status-tag status-alive" id="status-4">HP: 40/40</span>
+          </div>
+          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-4"></div></div>
+          <div class="team-stats-row">
+            <span class="team-dmg-stat" id="dmg-stat-4">⚔️ 累積造成傷害：0 HP</span>
+          </div>
+          <div class="team-input-group">
+            <label id="label-4">擲骰數值：</label>
+            <input type="number" class="dmg-input" id="input-4" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
+            <button class="btn-quick" onclick="addValue(4, 5)">+5</button>
+            <button class="btn-quick" onclick="addValue(4, 10)">+10</button>
+          </div>
+        </div>
+
+        <div class="team-card" id="card-5">
+          <div class="team-header">
+            <span class="team-name">第五騎士團</span>
+            <span class="team-status-tag status-alive" id="status-5">HP: 40/40</span>
+          </div>
+          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-5"></div></div>
+          <div class="team-stats-row">
+            <span class="team-dmg-stat" id="dmg-stat-5">⚔️ 累積造成傷害：0 HP</span>
+          </div>
+          <div class="team-input-group">
+            <label id="label-5">擲骰數值：</label>
+            <input type="number" class="dmg-input" id="input-5" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
+            <button class="btn-quick" onclick="addValue(5, 5)">+5</button>
+            <button class="btn-quick" onclick="addValue(5, 10)">+10</button>
+          </div>
+        </div>
+
+        <div class="team-card" id="card-6">
+          <div class="team-header">
+            <span class="team-name">第六騎士團</span>
+            <span class="team-status-tag status-alive" id="status-6">HP: 40/40</span>
+          </div>
+          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-6"></div></div>
+          <div class="team-stats-row">
+            <span class="team-dmg-stat" id="dmg-stat-6">⚔️ 累積造成傷害：0 HP</span>
+          </div>
+          <div class="team-input-group">
+            <label id="label-6">擲骰數值：</label>
+            <input type="number" class="dmg-input" id="input-6" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
+            <button class="btn-quick" onclick="addValue(6, 5)">+5</button>
+            <button class="btn-quick" onclick="addValue(6, 10)">+10</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="section-title title-odd" style="margin-bottom: 8px;">
+        ⚔️ 下排：奇數點數 ── 巨龍咆哮與特殊突發事件 (Odd)
+      </div>
+      <div class="dice-grid" id="oddGrid"></div>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="close-btn" id="closeBtn">&times;</button>
+      <div class="modal-header">
+        <div class="modal-dice-num" id="modalNum">--</div>
+        <div class="modal-title-box">
+          <h3 id="modalTitle">事件名稱</h3>
+          <span class="modal-tag" id="modalTag">事件類型</span>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="detail-block">
+          <h4>📖 戰場殘卷背景故事</h4>
+          <p id="modalDesc">故事描述...</p>
+        </div>
+        <div class="detail-block">
+          <h4>⚡ 戰略與機制影響</h4>
+          <p id="modalEffect">機制效果...</p>
+        </div>
+        <div class="detail-block">
+          <h4>🛡️ 騎士團破局對策</h4>
+          <p id="modalCounter">應對建議...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 頁面內訊息面板：取代 alert() -->
+  <div class="msg-panel-container" id="msgPanelContainer"></div>
+
+  <!-- 自訂回血面板：取代 prompt() -->
+  <div class="modal-overlay" id="healModalOverlay">
+    <div class="heal-modal-content">
+      <h3>🩺 巨龍自訂回復生命值</h3>
+      <input type="number" class="heal-modal-input" id="healModalInput" value="20" min="0" max="300" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); this.classList.remove('input-invalid')">
+      <div class="heal-modal-hint">請輸入巨龍欲回復的 HP（0～300）</div>
+      <div class="heal-modal-actions">
+        <button class="heal-modal-confirm" onclick="confirmCustomHeal()">確認回復</button>
+        <button class="heal-modal-cancel" onclick="closeHealModal()">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 指定隊伍回血面板 -->
+  <div class="modal-overlay" id="teamHealModalOverlay">
+    <div class="heal-modal-content">
+      <h3>💖 選擇要回血的騎士團</h3>
+      <div class="team-select-list" id="teamSelectList"></div>
+      <div class="team-select-quick">
+        <button type="button" onclick="setAllTeamChecks(true)">全選</button>
+        <button type="button" onclick="setAllTeamChecks(false)">全不選</button>
+      </div>
+      <div class="heal-modal-hint">已勾選的騎士團將直接恢復至滿血</div>
+      <div class="heal-modal-actions">
+        <button class="heal-modal-confirm" onclick="confirmTeamHeal()">確認回血</button>
+        <button class="heal-modal-cancel" onclick="closeTeamHealModal()">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const eventsData = {
+      2: { title: "龍防削弱", tag: "偶數 - 狀態影響", desc: "巨龍防線出現破綻！", effect: "下次巨龍防禦力 -25%。", counter: "點擊【🛡️ 下次龍防 -25%】開關，結算時將自動折算！" },
+      4: { title: "奇數破防", tag: "偶數 - 特殊打擊", desc: "奇數能量產生共鳴衝擊！", effect: "本回合「奇數骰子」直接造成傷害（無視巨龍防禦）。", counter: "可啟用【💥 破防直傷模式】進行計算。" },
+      6: { title: "偶數破防", tag: "偶數 - 特殊打擊", desc: "偶數衝擊力爆發，震撼巨龍！", effect: "本回合「偶數骰子」直接造成傷害（無視巨龍防禦）。", counter: "可啟用【💥 破防直傷模式】進行計算。" },
+      8: { title: "巨龍防禦 (8點)", tag: "偶數 - 護盾防護", desc: "巨龍展開防禦姿態。", effect: "巨龍本輪獲得 8 點防禦力。", counter: "將巨龍基礎戰力設為 8 點。" },
+      10: { title: "工作人員開合跳", tag: "偶數 - 互動事件", desc: "巨龍發動威壓，召喚工作人員！", effect: "巨龍防禦 10 點 + 在場所有工作人員進行 10 下開合跳！", counter: "帶動全場氣氛！" },
+      12: { title: "巨龍防禦 (12點)", tag: "偶數 - 護盾防護", desc: "堅硬龍鱗阻擋打擊。", effect: "巨龍本輪獲得 12 點防禦力。", counter: "將巨龍基礎戰力設為 12 點。" },
+      14: { title: "巨龍防禦 (14點)", tag: "偶數 - 護盾防護", desc: "龍息護盾籠罩全身。", effect: "巨龍本輪獲得 14 點防禦力。", counter: "將巨龍基礎戰力設為 14 點。" },
+      16: { title: "巨龍防禦 (16點)", tag: "偶數 - 護盾防護", desc: "古老魔法盾壁展開。", effect: "巨龍本輪獲得 16 點防禦力。", counter: "將巨龍基礎戰力設為 16 點。" },
+      18: { title: "巨龍防禦 (18點)", tag: "偶數 - 高額防禦", desc: "巨龍防禦達到極致姿態。", effect: "巨龍本輪獲得 18 點防禦力。", counter: "將巨龍基礎戰力設為 18 點。" },
+      20: { title: "龍回血", tag: "偶數 - 巨龍復甦", desc: "巨龍吸取大地元素，傷口迅速癒合！", effect: "巨龍回復生命值。", counter: "點擊【🩺 自訂龍回血】按鈕即可為巨龍補充生命值！" },
+
+      1: { title: "龍攻削弱", tag: "奇數 - 狀態影響", desc: "巨龍攻擊產生破綻，威力大減！", effect: "下次巨龍攻擊力 -25%。", counter: "點擊【📉 下次龍攻 -25%】開關，結算時自動折算！" },
+      3: { title: "黑市突襲", tag: "奇數 - 特殊交易", desc: "神秘黑市商人於戰場現身！", effect: "開啟黑市交易，各小隊可購買/使用戰術卡與道具。", counter: "開啟道具交易階段。" },
+      5: { title: "恢復所有骰子", tag: "奇數 - 全員復甦", desc: "聖光籠罩戰場，失落的骰子重獲生機！", effect: "立即恢復所有瀕死/失去的骰子，小隊狀態回滿！", counter: "點擊【💖 指定隊伍回血】選擇需要恢復的騎士團！" },
+      7: { title: "禁魔結界", tag: "奇數 - 道具封印", desc: "魔法紊亂爆發，道具暫時失靈！", effect: "下一回合全體小隊不能使用任何道具。", counter: "提醒各小隊本回合禁止使用卡牌。" },
+      9: { title: "所有人開合跳", tag: "奇數 - 狂暴打擊", desc: "巨龍龍爪震地，全場騎士團集體運動！", effect: "巨龍攻擊 9 點 + 所有人進行 9 下開合跳！", counter: "基礎戰力設為 9 點。" },
+      11: { title: "巨龍攻擊 (11點)", tag: "奇數 - 巨龍打擊", desc: "巨龍揮舞利爪橫掃前線。", effect: "巨龍本輪發動 11 點攻擊力。", counter: "將基礎戰力設為 11 點。" },
+      13: { title: "巨龍攻擊 (13點)", tag: "奇數 - 巨龍打擊", desc: "滾燙高溫龍息噴湧而至！", effect: "巨龍本輪發動 13 點攻擊力。", counter: "將基礎戰力設為 13 點。" },
+      15: { title: "巨龍攻擊 (15點)", tag: "奇數 - 重力打擊", desc: "巨龍傾注龍力發動強襲！", effect: "巨龍本輪發動 15 點攻擊力。", counter: "將基礎戰力設為 15 點。" },
+      17: { title: "掠奪威脅", tag: "奇數 - 道具掠奪", desc: "貪婪巨龍鎖定擁有最多物資的小隊！", effect: "對道具最多的兩隊發動 17 點攻擊，或該隊選擇損失 1 個道具。", counter: "選擇目標小隊進行結算。" },
+      19: { title: "滅世試煉", tag: "奇數 - 全場危機", desc: "巨龍啟動終極審判魔陣！", effect: "所有小隊點數和需要超過 65 點，否則每個小隊死去一顆骰子！", counter: "輸入點數後點擊【🎲 檢定全場點數 >65】即可一鍵驗證！" }
+    };
+
+    /* ===== 空值檢查輔助函式 ===== */
+    // 取代裸露的 document.getElementById：找不到元素時不會直接拋錯中斷整支程式，
+    // 只會在 console 留下警告，方便除錯又不影響其他功能繼續運作。
+    function safeGet(id) {
+      const el = document.getElementById(id);
+      if (!el) {
+        console.warn(`⚠️ 找不到元素 #${id}，此次操作已略過`);
+      }
+      return el;
+    }
+
+    /* ===== 頁面內訊息面板 (取代 alert) ===== */
+    function showMessage(title, body, type = 'info', duration = 6000) {
+      const container = safeGet('msgPanelContainer');
+      if (!container) {
+        // 萬一面板容器本身遺失，退回最基本的提示，確保訊息不會憑空消失
+        alert(`${title}\n${body}`);
+        return;
+      }
+
+      const panel = document.createElement('div');
+      panel.className = `msg-panel type-${type}`;
+      panel.innerHTML = `
+        <div class="msg-panel-header">
+          <span>${title}</span>
+          <button class="msg-panel-close" aria-label="關閉">&times;</button>
+        </div>
+        <div class="msg-panel-body">${body}</div>
+      `;
+
+      container.appendChild(panel);
+      requestAnimationFrame(() => panel.classList.add('show'));
+
+      let dismissTimer = setTimeout(() => dismiss(), duration);
+
+      function dismiss() {
+        clearTimeout(dismissTimer);
+        panel.classList.remove('show');
+        setTimeout(() => panel.remove(), 250);
+      }
+
+      panel.querySelector('.msg-panel-close').onclick = dismiss;
+      panel.addEventListener('mouseenter', () => clearTimeout(dismissTimer));
+      panel.addEventListener('mouseleave', () => { dismissTimer = setTimeout(dismiss, 2000); });
+    }
+
+    /* ===== 數值輸入防呆 =====
+       將輸入框內容轉為整數並限制在 [min, max] 範圍內，非數字一律視為 0。
+       在 blur / 結算前呼叫，避免負數、超大值或非數字字串造成計算錯誤。 */
+    function sanitizeInput(el, { min = 0, max = 999 } = {}) {
+      if (!el) return 0;
+      let val = parseInt(el.value, 10);
+      if (isNaN(val)) val = min;
+      val = Math.max(min, Math.min(max, val));
+      el.value = val;
+      return val;
+    }
+
+    const evenGrid = document.getElementById('evenGrid');
+    const oddGrid = document.getElementById('oddGrid');
+
+    function createCard(num, isEven) {
+      const data = eventsData[num];
+      const card = document.createElement('div');
+      card.className = `dice-card ${isEven ? 'even' : 'odd'}`;
+      card.onclick = () => openModal(num, isEven);
+      card.innerHTML = `<div class="dice-number">${num}</div><div class="dice-name">${data.title}</div>`;
+      return card;
+    }
+
+    [2, 4, 6, 8, 10, 12, 14, 16, 18, 20].forEach(num => evenGrid.appendChild(createCard(num, true)));
+    [1, 3, 5, 7, 9, 11, 13, 15, 17, 19].forEach(num => oddGrid.appendChild(createCard(num, false)));
+
+    const modalOverlay = safeGet('modalOverlay');
+    const closeBtnEl = safeGet('closeBtn');
+    if (closeBtnEl && modalOverlay) {
+      closeBtnEl.onclick = () => modalOverlay.classList.remove('active');
+    }
+    if (modalOverlay) {
+      modalOverlay.onclick = (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); };
+    }
+
+    const healModalOverlay = safeGet('healModalOverlay');
+    if (healModalOverlay) {
+      healModalOverlay.onclick = (e) => { if (e.target === healModalOverlay) closeHealModal(); };
+    }
+
+    const teamHealModalOverlay = safeGet('teamHealModalOverlay');
+    if (teamHealModalOverlay) {
+      teamHealModalOverlay.onclick = (e) => { if (e.target === teamHealModalOverlay) closeTeamHealModal(); };
+    }
+
+    // 鍵盤支援：按 Escape 關閉目前開啟的彈窗
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (modalOverlay && modalOverlay.classList.contains('active')) modalOverlay.classList.remove('active');
+      if (healModalOverlay && healModalOverlay.classList.contains('active')) closeHealModal();
+      if (teamHealModalOverlay && teamHealModalOverlay.classList.contains('active')) closeTeamHealModal();
+    });
+
+    // 自訂回血輸入框：Enter 直接確認
+    const healModalInputEl = safeGet('healModalInput');
+    if (healModalInputEl) {
+      healModalInputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') confirmCustomHeal();
+      });
+    }
+
+    function openModal(num, isEven) {
+      const data = eventsData[num];
+      if (!data) {
+        console.warn(`⚠️ 找不到編號 ${num} 的事件資料`);
+        return;
+      }
+      const modalNum = safeGet('modalNum');
+      const modalTitle = safeGet('modalTitle');
+      const modalTag = safeGet('modalTag');
+      const modalDesc = safeGet('modalDesc');
+      const modalEffect = safeGet('modalEffect');
+      const modalCounter = safeGet('modalCounter');
+      if (!modalNum || !modalTitle || !modalTag || !modalDesc || !modalEffect || !modalCounter || !modalOverlay) return;
+
+      modalNum.textContent = num;
+      modalNum.className = `modal-dice-num ${isEven ? 'even' : 'odd'}`;
+      modalTitle.textContent = data.title;
+      modalTag.textContent = data.tag;
+      modalTag.className = `modal-tag ${isEven ? 'even' : 'odd'}`;
+      modalDesc.textContent = data.desc;
+      modalEffect.textContent = data.effect;
+      modalCounter.textContent = data.counter;
+      modalOverlay.classList.add('active');
+    }
+
+    let currentRound = 1;
+    let isDragonAttacking = true;
+    let dragonMaxHp = 300;
+    let dragonHp = 300;
+
+    let activeStatus = {
+      atkDebuff: false,
+      defDebuff: false,
+      pierce: false
+    };
+
+    // simplified team state
+    const teams = Array.from({ length: 6 }, () => ({ hp: 40, maxHp: 40, totalDamage: 0 }));
+
+    function toggleStatusPanel() {
+      const body = safeGet('statusPanelBody');
+      const icon = safeGet('toggleIcon');
+      if (!body || !icon) return;
+      if (body.style.display === 'none') {
+        body.style.display = 'flex';
+        icon.textContent = '▼';
+      } else {
+        body.style.display = 'none';
+        icon.textContent = '▶';
+      }
+    }
+
+    function addValue(teamNum, val) {
+      const input = safeGet(`input-${teamNum}`);
+      if (!input) return;
+      const current = sanitizeInput(input, { min: 0, max: 999 });
+      input.value = Math.max(0, Math.min(999, current + val));
+    }
+
+    function toggleStatus(key) {
+      activeStatus[key] = !activeStatus[key];
+      updateStatusUI();
+    }
+
+    function updateStatusUI() {
+      const btnAtkDebuff = safeGet('btnAtkDebuff');
+      const btnDefDebuff = safeGet('btnDefDebuff');
+      const btnPierce = safeGet('btnPierce');
+      const listContainer = safeGet('activeStatusList');
+      if (btnAtkDebuff) btnAtkDebuff.classList.toggle('active', activeStatus.atkDebuff);
+      if (btnDefDebuff) btnDefDebuff.classList.toggle('active', activeStatus.defDebuff);
+      if (btnPierce) btnPierce.classList.toggle('active', activeStatus.pierce);
+      if (!listContainer) { updateCalculatedPower(); return; }
+      listContainer.innerHTML = "";
+
+      let count = 0;
+      if (activeStatus.atkDebuff) {
+        listContainer.innerHTML += `<span class="active-badge">📉 龍攻 -25% 生效中</span>`;
+        count++;
+      }
+      if (activeStatus.defDebuff) {
+        listContainer.innerHTML += `<span class="active-badge">🛡️ 龍防 -25% 生效中</span>`;
+        count++;
+      }
+      if (activeStatus.pierce) {
+        listContainer.innerHTML += `<span class="active-badge" style="border-color:#f87171; color:#fca5a5;">💥 直傷無視防禦</span>`;
+        count++;
+      }
+
+      if (count === 0) {
+        listContainer.innerHTML = `<span style="font-size: 0.7rem; color: #888;">無生效中的特殊狀態</span>`;
+      }
+
+      updateCalculatedPower();
+    }
+
+    function updateCalculatedPower() {
+      const powerInput = safeGet('dragonPowerInput');
+      const display = safeGet('effectivePowerDisplay');
+      if (!powerInput) return;
+
+      const basePower = parseInt(powerInput.value, 10) || 0;
+      let effective = basePower;
+
+      if (isDragonAttacking && activeStatus.atkDebuff) {
+        effective = Math.round(basePower * 0.75);
+      } else if (!isDragonAttacking && activeStatus.defDebuff) {
+        effective = Math.round(basePower * 0.75);
+      }
+
+      if (activeStatus.pierce && !isDragonAttacking) {
+        effective = 0;
+      }
+
+      if (display) display.textContent = `目前威力: ${effective}`;
+    }
+
+    function openTeamHealModal() {
+      const overlay = safeGet('teamHealModalOverlay');
+      const list = safeGet('teamSelectList');
+      if (!overlay || !list) return;
+
+      list.innerHTML = teams.map((team, idx) => {
+        const i = idx + 1;
+        const downed = team.hp === 0;
+        return `
+          <label class="team-select-item ${downed ? 'downed' : ''}">
+            <span>${downed ? '💀' : '⚔️'} 第${i}騎士團</span>
+            <span class="team-select-item-hp">HP ${team.hp}/${team.maxHp}</span>
+            <input type="checkbox" id="teamHealCheck-${i}" ${team.hp < team.maxHp ? 'checked' : ''} ${team.hp === team.maxHp ? 'disabled' : ''}>
+          </label>
+        `;
+      }).join('');
+
+      overlay.classList.add('active');
+    }
+
+    function closeTeamHealModal() {
+      const overlay = safeGet('teamHealModalOverlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    function setAllTeamChecks(checked) {
+      for (let i = 1; i <= 6; i++) {
+        const box = safeGet(`teamHealCheck-${i}`);
+        if (box && !box.disabled) box.checked = checked;
+      }
+    }
+
+    function confirmTeamHeal() {
+      const healedTeams = [];
+      for (let i = 1; i <= 6; i++) {
+        const box = safeGet(`teamHealCheck-${i}`);
+        if (box && box.checked && !box.disabled) {
+          teams[i - 1].hp = teams[i - 1].maxHp;
+          healedTeams.push(i);
+        }
+      }
+
+      updateTeamCardsUI();
+      closeTeamHealModal();
+
+      if (healedTeams.length === 0) {
+        showMessage('💖 指定隊伍回血', '沒有選擇任何需要恢復的騎士團。', 'info', 3500);
+      } else {
+        showMessage('💖 指定隊伍回血', `第 ${healedTeams.join('、')} 騎士團已恢復至滿血！`, 'heal', 4500);
+      }
+    }
+
+    function customHeal() {
+      const overlay = safeGet('healModalOverlay');
+      const input = safeGet('healModalInput');
+      if (!overlay || !input) return;
+      input.value = 20;
+      input.classList.remove('input-invalid');
+      overlay.classList.add('active');
+      input.focus();
+      input.select();
+    }
+
+    function closeHealModal() {
+      const overlay = safeGet('healModalOverlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    function confirmCustomHeal() {
+      const input = safeGet('healModalInput');
+      if (!input) return;
+
+      const healVal = sanitizeInput(input, { min: 0, max: 300 });
+
+      if (healVal <= 0) {
+        input.classList.add('input-invalid');
+        showMessage('⚠️ 輸入無效', '請輸入大於 0 的回復數值。', 'fail', 3500);
+        return;
+      }
+
+      dragonHp = Math.min(dragonMaxHp, dragonHp + healVal);
+      updateDragonHpUI();
+      closeHealModal();
+      showMessage('💚 巨龍回復生命值', `巨龍已成功回復 ${healVal} 點生命值！\n目前 HP：${dragonHp}/${dragonMaxHp}`, 'heal', 5000);
+    }
+
+    function updateDragonHpUI() {
+      const percent = (dragonHp / dragonMaxHp) * 100;
+      const hpBar = safeGet('hpBar');
+      const hpText = safeGet('hpText');
+      if (hpBar) hpBar.style.width = `${percent}%`;
+      if (hpText) hpText.textContent = `生命值：${dragonHp} / ${dragonMaxHp} HP`;
+    }
+
+    // 統一讀取第 i 隊輸入框數值，內含空值檢查與防呆
+    function getTeamInputValue(i) {
+      const input = safeGet(`input-${i}`);
+      if (!input) return 0;
+      return sanitizeInput(input, { min: 0, max: 999 });
+    }
+
+    function checkTotalSum65() {
+      let total = 0;
+      for (let i = 1; i <= 6; i++) {
+        total += getTeamInputValue(i);
+      }
+
+      if (total > 65) {
+        showMessage('🎉 檢定成功', `全場六隊點數總和為【${total} 點】（超過 65 點），全體安全過關！`, 'success', 5000);
+      } else {
+        for (let i = 0; i < 6; i++) {
+          teams[i].hp = 0;
+        }
+        updateTeamCardsUI();
+        showMessage('🚨 檢定失敗', `全場六隊點數總和僅為【${total} 點】（未超過 65 點）！\n每個小隊懲罰死去一顆骰子，全體騎士團進入瀕死狀態！`, 'fail', 6500);
+      }
+    }
+
+    function togglePhase() {
+      isDragonAttacking = !isDragonAttacking;
+      updatePhaseUI();
+    }
+
+    function updatePhaseUI() {
+      const banner = safeGet('phaseBanner');
+      const powerLabel = safeGet('powerLabel');
+
+      if (isDragonAttacking) {
+        if (banner) banner.className = "phase-banner phase-attack";
+        if (banner) banner.textContent = `🔥 第 ${currentRound} 回合：巨龍攻擊階段（小隊防禦）`;
+        if (powerLabel) powerLabel.textContent = "巨龍基礎攻擊：";
+        for (let i = 1; i <= 6; i++) { const l = safeGet(`label-${i}`); if (l) l.textContent = "防禦點數："; }
+      } else {
+        if (banner) banner.className = "phase-banner phase-defense";
+        if (banner) banner.textContent = `🛡️ 第 ${currentRound} 回合：巨龍防禦階段（小隊進攻）`;
+        if (powerLabel) powerLabel.textContent = "巨龍基礎防禦：";
+        for (let i = 1; i <= 6; i++) { const l = safeGet(`label-${i}`); if (l) l.textContent = "攻擊點數："; }
+      }
+      updateCalculatedPower();
+    }
+
+    function updateTeamCardsUI() {
+      for (let i = 1; i <= 6; i++) {
+        const team = teams[i - 1];
+        if (!team) continue;
+        const statusTag = safeGet(`status-${i}`);
+        const hpBar = safeGet(`hp-bar-${i}`);
+        const dmgStat = safeGet(`dmg-stat-${i}`);
+
+        if (hpBar) hpBar.style.width = `${Math.max(0, (team.hp / team.maxHp) * 100)}%`;
+        if (dmgStat) {
+          dmgStat.textContent = `⚔️ 累積造成傷害：${team.totalDamage} HP`;
+        }
+
+        if (statusTag) {
+          if (team.hp === 0) {
+            statusTag.className = "team-status-tag status-downed";
+            statusTag.textContent = `💀 瀕死 (HP: 0/${team.maxHp})`;
+          } else {
+            statusTag.className = "team-status-tag status-alive";
+            statusTag.textContent = `HP: ${team.hp}/${team.maxHp}`;
+          }
+        }
+      }
+    }
+
+    function settleRound() {
+      const powerInput = safeGet('dragonPowerInput');
+      const basePower = powerInput ? sanitizeInput(powerInput, { min: 0, max: 999 }) : 0;
+      let calculatedPower = basePower;
+      let logMsg = "";
+      const settledRound = currentRound;
+
+      if (isDragonAttacking) {
+        if (activeStatus.atkDebuff) {
+          calculatedPower = Math.round(basePower * 0.75);
+          logMsg += `【📉 龍攻 -25% 生效中！攻擊力自 ${basePower} 降為 ${calculatedPower}】\n`;
+        }
+        logMsg += `【巨龍攻擊階段 - 最終威力 ${calculatedPower}】\n`;
+
+        for (let i = 1; i <= 6; i++) {
+          const team = teams[i - 1];
+          const defVal = getTeamInputValue(i);
+          const overflowDmg = Math.max(0, calculatedPower - defVal);
+
+          if (overflowDmg > 0) {
+            const prevHp = team.hp;
+            team.hp = Math.max(0, team.hp - overflowDmg);
+            logMsg += `• 第 ${i} 隊防禦 ${defVal}，承受溢出傷害 ${overflowDmg} HP (剩餘 HP: ${team.hp})\n`;
+            if (team.hp === 0 && prevHp > 0) {
+              logMsg += `  🚨 第 ${i} 隊 HP 降為 0，進入瀕死狀態！\n`;
+            }
+          } else {
+            logMsg += `• 第 ${i} 隊防禦 ${defVal}，完美抵擋！\n`;
+          }
+          const input = safeGet(`input-${i}`);
+          if (input) input.value = 0;
+        }
+
+        activeStatus.atkDebuff = false;
+
+      } else {
+        if (activeStatus.defDebuff) {
+          calculatedPower = Math.round(basePower * 0.75);
+          logMsg += `【🛡️ 龍防 -25% 生效中！防禦力自 ${basePower} 降為 ${calculatedPower}】\n`;
+        }
+        if (activeStatus.pierce) {
+          calculatedPower = 0;
+          logMsg += `【💥 直傷破防模式！無視巨龍防禦】\n`;
+        }
+
+        logMsg += `【巨龍防禦階段 - 最終防禦 ${calculatedPower}】\n`;
+        let totalOverflowToDragon = 0;
+
+        for (let i = 1; i <= 6; i++) {
+          const team = teams[i - 1];
+          const atkVal = getTeamInputValue(i);
+          const overflowDmg = Math.max(0, atkVal - calculatedPower);
+
+          if (overflowDmg > 0) {
+            totalOverflowToDragon += overflowDmg;
+            team.totalDamage += overflowDmg;
+            logMsg += `• 第 ${i} 隊攻擊 ${atkVal}，造成溢出傷害 ${overflowDmg} HP！（累積 ${team.totalDamage} HP）\n`;
+          } else {
+            logMsg += `• 第 ${i} 隊攻擊 ${atkVal}，未突破護盾。\n`;
+          }
+          const input = safeGet(`input-${i}`);
+          if (input) input.value = 0;
+        }
+
+        dragonHp = Math.max(0, dragonHp - totalOverflowToDragon);
+        logMsg += `🔥 巨龍本輪共承受 ${totalOverflowToDragon} 點總溢出傷害！\n`;
+
+        activeStatus.defDebuff = false;
+        activeStatus.pierce = false;
+      }
+
+      updateDragonHpUI();
+      currentRound++;
+      isDragonAttacking = !isDragonAttacking;
+
+      showMessage(`⚔️ 第 ${settledRound} 回合結算報告`, logMsg.trim(), 'battle', 10000);
+
+      updateStatusUI();
+      updatePhaseUI();
+      updateTeamCardsUI();
+    }
+
+    function resetBattle() {
+      if (!confirm("確定要重置地下城戰況與所有騎士團狀態嗎？")) return;
+
+      currentRound = 1;
+      isDragonAttacking = true;
+      dragonHp = 300;
+      activeStatus.atkDebuff = false;
+      activeStatus.defDebuff = false;
+      activeStatus.pierce = false;
+
+      for (let i = 0; i < 6; i++) {
+        teams[i].hp = teams[i].maxHp;
+        teams[i].totalDamage = 0;
+        const input = safeGet(`input-${i + 1}`);
+        if (input) input.value = 0;
+      }
+
+      updateDragonHpUI();
+      updateStatusUI();
+      updatePhaseUI();
+      updateTeamCardsUI();
+    }
+
+    updateStatusUI();
+    updatePhaseUI();
+    updateTeamCardsUI();
+  </script>
+</body>
+</html>

@@ -291,7 +291,13 @@
       font-size: 1rem;
       letter-spacing: 1px;
       border: 1px solid var(--border-bronze);
+      cursor: pointer;
+      user-select: none;
+      transition: filter 0.15s, transform 0.1s;
     }
+
+    .phase-banner:hover { filter: brightness(1.2); }
+    .phase-banner:active { transform: scale(0.98); }
 
     .phase-attack { background: rgba(185, 28, 28, 0.3); color: #fca5a5; border-color: #ef4444; }
     .phase-defense { background: rgba(3, 105, 161, 0.3); color: #7dd3fc; border-color: #38bdf8; }
@@ -307,6 +313,93 @@
       font-size: 2.8rem;
       text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
     }
+
+    /* 巨龍大照片 */
+    .dragon-portrait-wrap {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 3px solid var(--parchment-gold);
+      box-shadow: 0 0 24px rgba(212, 175, 55, 0.35), inset 0 0 20px rgba(0,0,0,0.6);
+      margin-bottom: 4px;
+      position: relative;
+    }
+
+    .dragon-portrait {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      background: #100908;
+    }
+
+    .dragon-portrait-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
+      padding: 18px 10px 6px;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 0.85rem;
+      color: var(--gold-bright);
+      letter-spacing: 1px;
+      pointer-events: none;
+    }
+
+    /* 歷史紀錄面板 */
+    .history-panel {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-bronze);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .history-entry {
+      background: rgba(255,255,255,0.04);
+      border-left: 3px solid var(--border-bronze);
+      border-radius: 0 6px 6px 0;
+      padding: 6px 8px;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .history-entry .history-entry-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 800;
+      font-size: 0.75rem;
+      color: var(--gold-bright);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .history-entry .history-entry-time {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      white-space: nowrap;
+    }
+
+    .history-entry-body {
+      white-space: pre-line;
+      color: var(--text-gold);
+    }
+
+    .history-empty { font-size: 0.7rem; color: #888; text-align: center; padding: 8px 0; }
 
     .dragon-info {
       flex: 1;
@@ -422,6 +515,16 @@
       background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
     }
 
+    .btn-attack {
+      background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%);
+      border-color: #dc2626;
+      color: #ffffff;
+    }
+
+    .btn-attack:hover {
+      background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
+    }
+
     .active-status-list {
       display: flex;
       flex-wrap: wrap;
@@ -491,7 +594,6 @@
       box-shadow: 0 0 10px var(--gold-glow);
     }
 
-    .btn-switch-phase { background: rgba(255, 255, 255, 0.08); color: var(--text-gold); }
     .btn-reset { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: #7f1d1d; }
 
     /* MODAL POPUP */
@@ -753,7 +855,7 @@
         <div class="team-card" id="card-1">
           <div class="team-header">
             <span class="team-name">第一騎士團</span>
-            <span class="team-status-tag status-alive" id="status-1">HP: 40/40</span>
+            <span class="team-status-tag status-alive" id="status-1">HP: 20/20</span>
           </div>
           <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-1"></div></div>
           <div class="team-stats-row">
@@ -770,7 +872,7 @@
         <div class="team-card" id="card-2">
           <div class="team-header">
             <span class="team-name">第二騎士團</span>
-            <span class="team-status-tag status-alive" id="status-2">HP: 40/40</span>
+            <span class="team-status-tag status-alive" id="status-2">HP: 20/20</span>
           </div>
           <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-2"></div></div>
           <div class="team-stats-row">
@@ -787,7 +889,7 @@
         <div class="team-card" id="card-3">
           <div class="team-header">
             <span class="team-name">第三騎士團</span>
-            <span class="team-status-tag status-alive" id="status-3">HP: 40/40</span>
+            <span class="team-status-tag status-alive" id="status-3">HP: 20/20</span>
           </div>
           <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-3"></div></div>
           <div class="team-stats-row">
@@ -803,17 +905,21 @@
       </div>
 
       <div class="dragon-center">
-        <div class="phase-banner phase-attack" id="phaseBanner">
+        <div class="phase-banner phase-attack" id="phaseBanner" onclick="togglePhase()" title="點擊切換攻防階段">
           🔥 第 1 回合：巨龍攻擊階段（小隊擲骰防禦）
         </div>
 
+        <div class="dragon-portrait-wrap">
+          <img class="dragon-portrait" id="dragonPortrait" src="" alt="遠古紅龍">
+          <div class="dragon-portrait-caption">🐉 遠古紅龍 (Boss)</div>
+        </div>
+
         <div class="dragon-header-box">
-          <div class="dragon-avatar">🐉</div>
           <div class="dragon-info">
             <h2>遠古紅龍 (Boss)</h2>
             <div class="hp-bar-container">
               <div class="hp-bar" id="hpBar"></div>
-              <div class="hp-text" id="hpText">生命值：300 / 300 HP</div>
+              <div class="hp-text" id="hpText">生命值：250 / 250 HP</div>
             </div>
           </div>
         </div>
@@ -837,11 +943,11 @@
               <button class="btn-modifier" id="btnDefDebuff" onclick="toggleStatus('defDebuff')">
                 🛡️ 下次龍防 -25%
               </button>
-              <button class="btn-modifier btn-heal" onclick="openTeamHealModal()">
-                💖 指定隊伍回血
+              <button class="btn-modifier btn-heal" onclick="openHealModal()">
+                ❤️‍🩹 回復生命值
               </button>
-              <button class="btn-modifier btn-heal" onclick="customHeal()">
-                🩺 自訂龍回血
+              <button class="btn-modifier btn-attack" onclick="openAttackModal()">
+                🗡️ 指定隊伍攻擊龍
               </button>
               <button class="btn-modifier" id="btnPierce" onclick="toggleStatus('pierce')">
                 💥 破防直傷模式
@@ -850,8 +956,17 @@
                 🎲 檢定全場點數 >65
               </button>
             </div>
-          </div>
 
+            <div class="history-panel">
+              <div class="panel-subtitle" onclick="toggleHistoryPanel()">
+                <span>📜 歷史紀錄 <span id="historyToggleIcon">▶</span></span>
+                <span style="color: var(--text-muted); font-size: 0.7rem;" id="historyCount">共 0 筆</span>
+              </div>
+              <div class="history-list" id="historyList" style="display: none;">
+                <div class="history-empty">尚無歷史紀錄</div>
+              </div>
+            </div>
+          </div>
           <div class="active-status-list" id="activeStatusList">
             <span style="font-size: 0.7rem; color: #888;">無生效中的特殊狀態</span>
           </div>
@@ -859,7 +974,6 @@
 
         <div class="dragon-controls">
           <button class="btn-action btn-settle" onclick="settleRound()">⚔️ 結算本回合攻防與傷害</button>
-          <button class="btn-action btn-switch-phase" onclick="togglePhase()">🔄 手動切換攻防階段</button>
           <button class="btn-action btn-reset" onclick="resetBattle()">⚠️ 重置戰力與狀態</button>
         </div>
       </div>
@@ -868,7 +982,7 @@
         <div class="team-card" id="card-4">
           <div class="team-header">
             <span class="team-name">第四騎士團</span>
-            <span class="team-status-tag status-alive" id="status-4">HP: 40/40</span>
+            <span class="team-status-tag status-alive" id="status-4">HP: 20/20</span>
           </div>
           <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-4"></div></div>
           <div class="team-stats-row">
@@ -885,7 +999,7 @@
         <div class="team-card" id="card-5">
           <div class="team-header">
             <span class="team-name">第五騎士團</span>
-            <span class="team-status-tag status-alive" id="status-5">HP: 40/40</span>
+            <span class="team-status-tag status-alive" id="status-5">HP: 20/20</span>
           </div>
           <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-5"></div></div>
           <div class="team-stats-row">
@@ -902,7 +1016,7 @@
         <div class="team-card" id="card-6">
           <div class="team-header">
             <span class="team-name">第六騎士團</span>
-            <span class="team-status-tag status-alive" id="status-6">HP: 40/40</span>
+            <span class="team-status-tag status-alive" id="status-6">HP: 20/20</span>
           </div>
           <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-6"></div></div>
           <div class="team-stats-row">
@@ -958,54 +1072,56 @@
   <!-- 頁面內訊息面板：取代 alert() -->
   <div class="msg-panel-container" id="msgPanelContainer"></div>
 
-  <!-- 自訂回血面板：取代 prompt() -->
+  <!-- 回復生命值面板（巨龍與騎士團合併，可指定回復量） -->
   <div class="modal-overlay" id="healModalOverlay">
     <div class="heal-modal-content">
-      <h3>🩺 巨龍自訂回復生命值</h3>
-      <input type="number" class="heal-modal-input" id="healModalInput" value="20" min="0" max="300" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); this.classList.remove('input-invalid')">
-      <div class="heal-modal-hint">請輸入巨龍欲回復的 HP（0～300）</div>
+      <h3>❤️‍🩹 回復生命值</h3>
+      <div class="team-select-list" id="healSelectList"></div>
+      <div class="team-select-quick">
+        <button type="button" onclick="setAllHealChecks(true)">全選</button>
+        <button type="button" onclick="setAllHealChecks(false)">全不選</button>
+      </div>
+      <input type="number" class="heal-modal-input" id="healAmountInput" value="20" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); this.classList.remove('input-invalid')">
+      <div class="heal-modal-hint">已勾選的對象，將各自回復指定的生命值（不會超過上限）</div>
       <div class="heal-modal-actions">
-        <button class="heal-modal-confirm" onclick="confirmCustomHeal()">確認回復</button>
+        <button class="heal-modal-confirm" onclick="confirmHeal()">確認回復</button>
         <button class="heal-modal-cancel" onclick="closeHealModal()">取消</button>
       </div>
     </div>
   </div>
 
-  <!-- 指定隊伍回血面板 -->
-  <div class="modal-overlay" id="teamHealModalOverlay">
+  <!-- 指定隊伍攻擊龍面板 -->
+  <div class="modal-overlay" id="attackModalOverlay">
     <div class="heal-modal-content">
-      <h3>💖 選擇要回血的騎士團</h3>
-      <div class="team-select-list" id="teamSelectList"></div>
-      <div class="team-select-quick">
-        <button type="button" onclick="setAllTeamChecks(true)">全選</button>
-        <button type="button" onclick="setAllTeamChecks(false)">全不選</button>
-      </div>
-      <div class="heal-modal-hint">已勾選的騎士團將直接恢復至滿血</div>
+      <h3>🗡️ 指定隊伍攻擊巨龍</h3>
+      <div class="team-select-list" id="attackSelectList"></div>
+      <input type="number" class="heal-modal-input" id="attackAmountInput" value="10" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); this.classList.remove('input-invalid')">
+      <div class="heal-modal-hint">選擇一個騎士團，直接對巨龍造成指定傷害（將計入該隊累積傷害）</div>
       <div class="heal-modal-actions">
-        <button class="heal-modal-confirm" onclick="confirmTeamHeal()">確認回血</button>
-        <button class="heal-modal-cancel" onclick="closeTeamHealModal()">取消</button>
+        <button class="heal-modal-confirm" onclick="confirmAttack()">確認攻擊</button>
+        <button class="heal-modal-cancel" onclick="closeAttackModal()">取消</button>
       </div>
     </div>
   </div>
 
   <script>
     const eventsData = {
-      2: { title: "龍防削弱", tag: "偶數 - 狀態影響", desc: "巨龍防線出現破綻！", effect: "下次巨龍防禦力 -25%。", counter: "點擊【🛡️ 下次龍防 -25%】開關，結算時將自動折算！" },
-      4: { title: "奇數破防", tag: "偶數 - 特殊打擊", desc: "奇數能量產生共鳴衝擊！", effect: "本回合「奇數骰子」直接造成傷害（無視巨龍防禦）。", counter: "可啟用【💥 破防直傷模式】進行計算。" },
-      6: { title: "偶數破防", tag: "偶數 - 特殊打擊", desc: "偶數衝擊力爆發，震撼巨龍！", effect: "本回合「偶數骰子」直接造成傷害（無視巨龍防禦）。", counter: "可啟用【💥 破防直傷模式】進行計算。" },
+      2: { title: "龍防削弱", tag: "偶數 - 狀態影響", desc: "巨龍防線出現破綻！", effect: "下次巨龍防禦力 -25%。", counter: "開啟【🛡️ 下次龍防 -25%】，下次防禦自動折算！" },
+      4: { title: "奇數破防", tag: "偶數 - 特殊打擊", desc: "奇數能量產生共鳴衝擊！", effect: "本回合「奇數骰子」直接造成傷害（無視巨龍防禦）。", counter: "啟用【💥 破防直傷模式】進行計算。" },
+      6: { title: "偶數破防", tag: "偶數 - 特殊打擊", desc: "偶數衝擊力爆發，震撼巨龍！", effect: "本回合「偶數骰子」直接造成傷害（無視巨龍防禦）。", counter: "啟用【💥 破防直傷模式】進行計算。" },
       8: { title: "巨龍防禦 (8點)", tag: "偶數 - 護盾防護", desc: "巨龍展開防禦姿態。", effect: "巨龍本輪獲得 8 點防禦力。", counter: "將巨龍基礎戰力設為 8 點。" },
-      10: { title: "工作人員開合跳", tag: "偶數 - 互動事件", desc: "巨龍發動威壓，召喚工作人員！", effect: "巨龍防禦 10 點 + 在場所有工作人員進行 10 下開合跳！", counter: "帶動全場氣氛！" },
+      10: { title: "巨龍防禦 (10點)", tag: "偶數 - 護盾防護", desc: "巨龍發動威壓，召喚工作人員！", effect: "巨龍防禦 10 點 + 💥在場所有工作人員進行 10 下開合跳！💥", counter: "帶動全場氣氛！" },
       12: { title: "巨龍防禦 (12點)", tag: "偶數 - 護盾防護", desc: "堅硬龍鱗阻擋打擊。", effect: "巨龍本輪獲得 12 點防禦力。", counter: "將巨龍基礎戰力設為 12 點。" },
       14: { title: "巨龍防禦 (14點)", tag: "偶數 - 護盾防護", desc: "龍息護盾籠罩全身。", effect: "巨龍本輪獲得 14 點防禦力。", counter: "將巨龍基礎戰力設為 14 點。" },
       16: { title: "巨龍防禦 (16點)", tag: "偶數 - 護盾防護", desc: "古老魔法盾壁展開。", effect: "巨龍本輪獲得 16 點防禦力。", counter: "將巨龍基礎戰力設為 16 點。" },
       18: { title: "巨龍防禦 (18點)", tag: "偶數 - 高額防禦", desc: "巨龍防禦達到極致姿態。", effect: "巨龍本輪獲得 18 點防禦力。", counter: "將巨龍基礎戰力設為 18 點。" },
-      20: { title: "龍回血", tag: "偶數 - 巨龍復甦", desc: "巨龍吸取大地元素，傷口迅速癒合！", effect: "巨龍回復生命值。", counter: "點擊【🩺 自訂龍回血】按鈕即可為巨龍補充生命值！" },
+      20: { title: "龍回血", tag: "偶數 - 巨龍復甦", desc: "巨龍吸取大地元素，傷口迅速癒合！", effect: "巨龍回復生命值。", counter: "為巨龍補充生命值！" },
 
-      1: { title: "龍攻削弱", tag: "奇數 - 狀態影響", desc: "巨龍攻擊產生破綻，威力大減！", effect: "下次巨龍攻擊力 -25%。", counter: "點擊【📉 下次龍攻 -25%】開關，結算時自動折算！" },
+      1: { title: "龍攻削弱", tag: "奇數 - 狀態影響", desc: "巨龍攻擊產生破綻，威力大減！", effect: "下次巨龍攻擊力 -25%。", counter: "開啟【📉 下次龍攻 -25%】，下次攻擊自動折算！" },
       3: { title: "黑市突襲", tag: "奇數 - 特殊交易", desc: "神秘黑市商人於戰場現身！", effect: "開啟黑市交易，各小隊可購買/使用戰術卡與道具。", counter: "開啟道具交易階段。" },
-      5: { title: "恢復所有骰子", tag: "奇數 - 全員復甦", desc: "聖光籠罩戰場，失落的骰子重獲生機！", effect: "立即恢復所有瀕死/失去的骰子，小隊狀態回滿！", counter: "點擊【💖 指定隊伍回血】選擇需要恢復的騎士團！" },
+      5: { title: "巨龍休息", tag: "奇數 - 進攻機會", desc: "巨龍睡著了，現在是偷襲的好機會!", effect: "投擲一顆骰子，決定所造成的傷害。【不可使用道具 】", counter: "設置巨龍為破防狀態。" },
       7: { title: "禁魔結界", tag: "奇數 - 道具封印", desc: "魔法紊亂爆發，道具暫時失靈！", effect: "下一回合全體小隊不能使用任何道具。", counter: "提醒各小隊本回合禁止使用卡牌。" },
-      9: { title: "所有人開合跳", tag: "奇數 - 狂暴打擊", desc: "巨龍龍爪震地，全場騎士團集體運動！", effect: "巨龍攻擊 9 點 + 所有人進行 9 下開合跳！", counter: "基礎戰力設為 9 點。" },
+      9: { title: "巨龍攻擊 (9點)", tag: "奇數 - 狂暴打擊", desc: "巨龍龍爪震地，全場騎士團集體運動！", effect: "巨龍攻擊 9 點 + 💥所有人進行 9 下開合跳！💥", counter: "基礎戰力設為 9 點。" },
       11: { title: "巨龍攻擊 (11點)", tag: "奇數 - 巨龍打擊", desc: "巨龍揮舞利爪橫掃前線。", effect: "巨龍本輪發動 11 點攻擊力。", counter: "將基礎戰力設為 11 點。" },
       13: { title: "巨龍攻擊 (13點)", tag: "奇數 - 巨龍打擊", desc: "滾燙高溫龍息噴湧而至！", effect: "巨龍本輪發動 13 點攻擊力。", counter: "將基礎戰力設為 13 點。" },
       15: { title: "巨龍攻擊 (15點)", tag: "奇數 - 重力打擊", desc: "巨龍傾注龍力發動強襲！", effect: "巨龍本輪發動 15 點攻擊力。", counter: "將基礎戰力設為 15 點。" },
@@ -1100,9 +1216,9 @@
       healModalOverlay.onclick = (e) => { if (e.target === healModalOverlay) closeHealModal(); };
     }
 
-    const teamHealModalOverlay = safeGet('teamHealModalOverlay');
-    if (teamHealModalOverlay) {
-      teamHealModalOverlay.onclick = (e) => { if (e.target === teamHealModalOverlay) closeTeamHealModal(); };
+    const attackModalOverlay = safeGet('attackModalOverlay');
+    if (attackModalOverlay) {
+      attackModalOverlay.onclick = (e) => { if (e.target === attackModalOverlay) closeAttackModal(); };
     }
 
     // 鍵盤支援：按 Escape 關閉目前開啟的彈窗
@@ -1110,14 +1226,20 @@
       if (e.key !== 'Escape') return;
       if (modalOverlay && modalOverlay.classList.contains('active')) modalOverlay.classList.remove('active');
       if (healModalOverlay && healModalOverlay.classList.contains('active')) closeHealModal();
-      if (teamHealModalOverlay && teamHealModalOverlay.classList.contains('active')) closeTeamHealModal();
+      if (attackModalOverlay && attackModalOverlay.classList.contains('active')) closeAttackModal();
     });
 
-    // 自訂回血輸入框：Enter 直接確認
-    const healModalInputEl = safeGet('healModalInput');
-    if (healModalInputEl) {
-      healModalInputEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') confirmCustomHeal();
+    // 回復量／攻擊傷害輸入框：Enter 直接確認
+    const healAmountInputEl = safeGet('healAmountInput');
+    if (healAmountInputEl) {
+      healAmountInputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') confirmHeal();
+      });
+    }
+    const attackAmountInputEl = safeGet('attackAmountInput');
+    if (attackAmountInputEl) {
+      attackAmountInputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') confirmAttack();
       });
     }
 
@@ -1146,10 +1268,78 @@
       modalOverlay.classList.add('active');
     }
 
+    /* =====================================================================
+       🐉 巨龍照片自訂區
+       在這裡填入你想要的圖片網址（例如自己上傳到圖床、Imgur、Google Drive
+       公開連結等），即可替換中央的巨龍大照片。也可以填入本機相對路徑，
+       例如 "images/dragon.jpg"（需將圖片與本 HTML 放在同個資料夾）。
+       若留空字串 ""，會自動顯示下面的 DRAGON_IMAGE_FALLBACK 純色占位圖。
+       ===================================================================== */
+    const DRAGON_IMAGE_URL = "FB_IMG_1704464075296.jpg";
+    // 找不到圖片、或 DRAGON_IMAGE_URL 留空時使用的備用圖（SVG 占位圖，可自行替換）
+    const DRAGON_IMAGE_FALLBACK = "data:image/svg+xml;utf8," + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+        <rect width="100%" height="100%" fill="#1a120c"/>
+        <text x="50%" y="50%" font-size="90" text-anchor="middle" dominant-baseline="middle">🐉</text>
+        <text x="50%" y="86%" font-size="18" fill="#d4af37" text-anchor="middle" font-family="serif">請於程式碼 DRAGON_IMAGE_URL 設定巨龍照片</text>
+      </svg>
+    `);
+
+    function setDragonPortrait(url) {
+      const img = safeGet('dragonPortrait');
+      if (!img) return;
+      img.onerror = () => { img.onerror = null; img.src = DRAGON_IMAGE_FALLBACK; };
+      img.src = url && url.trim() !== '' ? url : DRAGON_IMAGE_FALLBACK;
+    }
+    setDragonPortrait(DRAGON_IMAGE_URL);
+
+    /* ===== 歷史紀錄 ===== */
+    const historyLog = []; // { time, title, body }
+    let historyPanelOpen = false;
+
+    function addHistoryLog(title, body) {
+      const now = new Date();
+      const time = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+      historyLog.unshift({ time, title, body });
+      if (historyLog.length > 100) historyLog.length = 100; // 避免無限增長
+      renderHistoryList();
+    }
+
+    function renderHistoryList() {
+      const list = safeGet('historyList');
+      const countEl = safeGet('historyCount');
+      if (countEl) countEl.textContent = `共 ${historyLog.length} 筆`;
+      if (!list) return;
+
+      if (historyLog.length === 0) {
+        list.innerHTML = `<div class="history-empty">尚無歷史紀錄</div>`;
+        return;
+      }
+
+      list.innerHTML = historyLog.map(entry => `
+        <div class="history-entry">
+          <div class="history-entry-title">
+            <span>${entry.title}</span>
+            <span class="history-entry-time">${entry.time}</span>
+          </div>
+          <div class="history-entry-body">${entry.body}</div>
+        </div>
+      `).join('');
+    }
+
+    function toggleHistoryPanel() {
+      const list = safeGet('historyList');
+      const icon = safeGet('historyToggleIcon');
+      if (!list || !icon) return;
+      historyPanelOpen = !historyPanelOpen;
+      list.style.display = historyPanelOpen ? 'flex' : 'none';
+      icon.textContent = historyPanelOpen ? '▼' : '▶';
+    }
+
     let currentRound = 1;
     let isDragonAttacking = true;
-    let dragonMaxHp = 300;
-    let dragonHp = 300;
+    let dragonMaxHp = 250;
+    let dragonHp = 250;
 
     let activeStatus = {
       atkDebuff: false,
@@ -1158,7 +1348,8 @@
     };
 
     // simplified team state
-    const teams = Array.from({ length: 6 }, () => ({ hp: 40, maxHp: 40, totalDamage: 0 }));
+    // recoveryRoundsLeft: 0 表示正常/無需恢復；>0 表示瀕死中，還需經過幾個回合才會自動復原
+    const teams = Array.from({ length: 6 }, () => ({ hp: 20, maxHp: 20, totalDamage: 0, recoveryRoundsLeft: 0 }));
 
     function toggleStatusPanel() {
       const body = safeGet('statusPanelBody');
@@ -1238,67 +1429,39 @@
       if (display) display.textContent = `目前威力: ${effective}`;
     }
 
-    function openTeamHealModal() {
-      const overlay = safeGet('teamHealModalOverlay');
-      const list = safeGet('teamSelectList');
+    function openHealModal() {
+      const overlay = safeGet('healModalOverlay');
+      const list = safeGet('healSelectList');
+      const amountInput = safeGet('healAmountInput');
       if (!overlay || !list) return;
 
-      list.innerHTML = teams.map((team, idx) => {
+      let html = `
+        <label class="team-select-item">
+          <span>🐉 巨龍</span>
+          <span class="team-select-item-hp">HP ${dragonHp}/${dragonMaxHp}</span>
+          <input type="checkbox" id="healCheck-dragon" ${dragonHp < dragonMaxHp ? 'checked' : ''} ${dragonHp === dragonMaxHp ? 'disabled' : ''}>
+        </label>
+      `;
+
+      html += teams.map((team, idx) => {
         const i = idx + 1;
         const downed = team.hp === 0;
+        const recoveryNote = downed && team.recoveryRoundsLeft > 0 ? `（恢復倒數 ${team.recoveryRoundsLeft} 回合）` : '';
         return `
           <label class="team-select-item ${downed ? 'downed' : ''}">
             <span>${downed ? '💀' : '⚔️'} 第${i}騎士團</span>
-            <span class="team-select-item-hp">HP ${team.hp}/${team.maxHp}</span>
-            <input type="checkbox" id="teamHealCheck-${i}" ${team.hp < team.maxHp ? 'checked' : ''} ${team.hp === team.maxHp ? 'disabled' : ''}>
+            <span class="team-select-item-hp">HP ${team.hp}/${team.maxHp}${recoveryNote}</span>
+            <input type="checkbox" id="healCheck-${i}" ${team.hp < team.maxHp ? 'checked' : ''} ${team.hp === team.maxHp ? 'disabled' : ''}>
           </label>
         `;
       }).join('');
 
+      list.innerHTML = html;
+      if (amountInput) {
+        amountInput.value = 20;
+        amountInput.classList.remove('input-invalid');
+      }
       overlay.classList.add('active');
-    }
-
-    function closeTeamHealModal() {
-      const overlay = safeGet('teamHealModalOverlay');
-      if (overlay) overlay.classList.remove('active');
-    }
-
-    function setAllTeamChecks(checked) {
-      for (let i = 1; i <= 6; i++) {
-        const box = safeGet(`teamHealCheck-${i}`);
-        if (box && !box.disabled) box.checked = checked;
-      }
-    }
-
-    function confirmTeamHeal() {
-      const healedTeams = [];
-      for (let i = 1; i <= 6; i++) {
-        const box = safeGet(`teamHealCheck-${i}`);
-        if (box && box.checked && !box.disabled) {
-          teams[i - 1].hp = teams[i - 1].maxHp;
-          healedTeams.push(i);
-        }
-      }
-
-      updateTeamCardsUI();
-      closeTeamHealModal();
-
-      if (healedTeams.length === 0) {
-        showMessage('💖 指定隊伍回血', '沒有選擇任何需要恢復的騎士團。', 'info', 3500);
-      } else {
-        showMessage('💖 指定隊伍回血', `第 ${healedTeams.join('、')} 騎士團已恢復至滿血！`, 'heal', 4500);
-      }
-    }
-
-    function customHeal() {
-      const overlay = safeGet('healModalOverlay');
-      const input = safeGet('healModalInput');
-      if (!overlay || !input) return;
-      input.value = 20;
-      input.classList.remove('input-invalid');
-      overlay.classList.add('active');
-      input.focus();
-      input.select();
     }
 
     function closeHealModal() {
@@ -1306,22 +1469,125 @@
       if (overlay) overlay.classList.remove('active');
     }
 
-    function confirmCustomHeal() {
-      const input = safeGet('healModalInput');
-      if (!input) return;
+    function setAllHealChecks(checked) {
+      const dragonBox = safeGet('healCheck-dragon');
+      if (dragonBox && !dragonBox.disabled) dragonBox.checked = checked;
+      for (let i = 1; i <= 6; i++) {
+        const box = safeGet(`healCheck-${i}`);
+        if (box && !box.disabled) box.checked = checked;
+      }
+    }
 
-      const healVal = sanitizeInput(input, { min: 0, max: 300 });
+    function confirmHeal() {
+      const amountInput = safeGet('healAmountInput');
+      if (!amountInput) return;
 
-      if (healVal <= 0) {
-        input.classList.add('input-invalid');
+      const amount = sanitizeInput(amountInput, { min: 0, max: 999 });
+      if (amount <= 0) {
+        amountInput.classList.add('input-invalid');
         showMessage('⚠️ 輸入無效', '請輸入大於 0 的回復數值。', 'fail', 3500);
         return;
       }
 
-      dragonHp = Math.min(dragonMaxHp, dragonHp + healVal);
-      updateDragonHpUI();
+      const healedNames = [];
+
+      const dragonBox = safeGet('healCheck-dragon');
+      if (dragonBox && dragonBox.checked && !dragonBox.disabled) {
+        dragonHp = Math.min(dragonMaxHp, dragonHp + amount);
+        updateDragonHpUI();
+        healedNames.push('🐉 巨龍');
+      }
+
+      for (let i = 1; i <= 6; i++) {
+        const box = safeGet(`healCheck-${i}`);
+        if (box && box.checked && !box.disabled) {
+          const team = teams[i - 1];
+          team.hp = Math.min(team.maxHp, team.hp + amount);
+          team.recoveryRoundsLeft = 0;
+          healedNames.push(`第${i}騎士團`);
+        }
+      }
+
+      updateTeamCardsUI();
       closeHealModal();
-      showMessage('💚 巨龍回復生命值', `巨龍已成功回復 ${healVal} 點生命值！\n目前 HP：${dragonHp}/${dragonMaxHp}`, 'heal', 5000);
+
+      if (healedNames.length === 0) {
+        showMessage('❤️‍🩹 回復生命值', '沒有選擇任何需要恢復的對象。', 'info', 3500);
+      } else {
+        const msg = `${healedNames.join('、')} 各回復了 ${amount} 點生命值！`;
+        showMessage('❤️‍🩹 回復生命值', msg, 'heal', 4500);
+        addHistoryLog('❤️‍🩹 回復生命值', msg);
+      }
+    }
+
+    function openAttackModal() {
+      const overlay = safeGet('attackModalOverlay');
+      const list = safeGet('attackSelectList');
+      const amountInput = safeGet('attackAmountInput');
+      if (!overlay || !list) return;
+
+      list.innerHTML = teams.map((team, idx) => {
+        const i = idx + 1;
+        const downed = team.hp === 0;
+        const note = downed ? '（瀕死中無法行動）' : '';
+        return `
+          <label class="team-select-item ${downed ? 'downed' : ''}">
+            <span>${downed ? '💀' : '⚔️'} 第${i}騎士團${note}</span>
+            <span class="team-select-item-hp">累積傷害 ${team.totalDamage} HP</span>
+            <input type="radio" name="attackTeamRadio" id="attackTeamRadio-${i}" value="${i}" ${downed ? 'disabled' : ''}>
+          </label>
+        `;
+      }).join('');
+
+      const firstAvailable = teams.findIndex(t => t.hp > 0);
+      if (firstAvailable !== -1) {
+        const radio = safeGet(`attackTeamRadio-${firstAvailable + 1}`);
+        if (radio) radio.checked = true;
+      }
+
+      if (amountInput) {
+        amountInput.value = 10;
+        amountInput.classList.remove('input-invalid');
+      }
+      overlay.classList.add('active');
+    }
+
+    function closeAttackModal() {
+      const overlay = safeGet('attackModalOverlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    function confirmAttack() {
+      const amountInput = safeGet('attackAmountInput');
+      if (!amountInput) return;
+
+      const amount = sanitizeInput(amountInput, { min: 0, max: 999 });
+      const checkedRadio = document.querySelector('input[name="attackTeamRadio"]:checked');
+
+      if (!checkedRadio) {
+        showMessage('⚠️ 尚未選擇隊伍', '請先選擇一個要出擊的騎士團。', 'fail', 3500);
+        return;
+      }
+      if (amount <= 0) {
+        amountInput.classList.add('input-invalid');
+        showMessage('⚠️ 輸入無效', '請輸入大於 0 的傷害數值。', 'fail', 3500);
+        return;
+      }
+
+      const teamIndex = parseInt(checkedRadio.value, 10) - 1;
+      const team = teams[teamIndex];
+      if (!team) return;
+
+      dragonHp = Math.max(0, dragonHp - amount);
+      team.totalDamage += amount;
+
+      updateDragonHpUI();
+      updateTeamCardsUI();
+      closeAttackModal();
+
+      const attackMsg = `第 ${teamIndex + 1} 騎士團對巨龍造成了 ${amount} 點傷害！（累積傷害：${team.totalDamage} HP，巨龍剩餘：${dragonHp} HP）`;
+      showMessage('🗡️ 指定隊伍攻擊', attackMsg, 'battle', 4500);
+      addHistoryLog('🗡️ 指定隊伍攻擊', attackMsg);
     }
 
     function updateDragonHpUI() {
@@ -1346,13 +1612,26 @@
       }
 
       if (total > 65) {
-        showMessage('🎉 檢定成功', `全場六隊點數總和為【${total} 點】（超過 65 點），全體安全過關！`, 'success', 5000);
+        const passMsg = `全場六隊點數總和為【${total} 點】（超過 65 點），全體安全過關！`;
+        showMessage('🎉 檢定成功', passMsg, 'success', 5000);
+        addHistoryLog('🎲 檢定全場點數 >65', `✅ ${passMsg}`);
       } else {
         for (let i = 0; i < 6; i++) {
-          teams[i].hp = 0;
+          if (teams[i].hp > 0) {
+            teams[i].hp = 0;
+            teams[i].recoveryRoundsLeft = 2;
+          }
         }
         updateTeamCardsUI();
-        showMessage('🚨 檢定失敗', `全場六隊點數總和僅為【${total} 點】（未超過 65 點）！\n每個小隊懲罰死去一顆骰子，全體騎士團進入瀕死狀態！`, 'fail', 6500);
+        const failMsg = `全場六隊點數總和僅為【${total} 點】（未超過 65 點）！\n每個小隊懲罰死去一顆骰子，全體騎士團進入瀕死狀態（需 2 回合恢復）！`;
+        showMessage('🚨 檢定失敗', failMsg, 'fail', 6500);
+        addHistoryLog('🎲 檢定全場點數 >65', `❌ ${failMsg}`);
+      }
+
+      // 檢定用掉的點數已結算完畢，清空輸入框，避免舊數值被下次「結算本回合」誤用
+      for (let i = 1; i <= 6; i++) {
+        const input = safeGet(`input-${i}`);
+        if (input) input.value = 0;
       }
     }
 
@@ -1395,7 +1674,9 @@
         if (statusTag) {
           if (team.hp === 0) {
             statusTag.className = "team-status-tag status-downed";
-            statusTag.textContent = `💀 瀕死 (HP: 0/${team.maxHp})`;
+            statusTag.textContent = team.recoveryRoundsLeft > 0
+              ? `💀 瀕死（恢復倒數 ${team.recoveryRoundsLeft} 回合）`
+              : `💀 瀕死 (HP: 0/${team.maxHp})`;
           } else {
             statusTag.className = "team-status-tag status-alive";
             statusTag.textContent = `HP: ${team.hp}/${team.maxHp}`;
@@ -1420,6 +1701,21 @@
 
         for (let i = 1; i <= 6; i++) {
           const team = teams[i - 1];
+          const input = safeGet(`input-${i}`);
+
+          if (team.hp === 0 && team.recoveryRoundsLeft > 0) {
+            team.recoveryRoundsLeft--;
+            if (team.recoveryRoundsLeft <= 0) {
+              team.recoveryRoundsLeft = 0;
+              team.hp = team.maxHp;
+              logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
+            } else {
+              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態，本回合無法防禦（恢復倒數 ${team.recoveryRoundsLeft} 回合）\n`;
+            }
+            if (input) input.value = 0;
+            continue;
+          }
+
           const defVal = getTeamInputValue(i);
           const overflowDmg = Math.max(0, calculatedPower - defVal);
 
@@ -1428,12 +1724,12 @@
             team.hp = Math.max(0, team.hp - overflowDmg);
             logMsg += `• 第 ${i} 隊防禦 ${defVal}，承受溢出傷害 ${overflowDmg} HP (剩餘 HP: ${team.hp})\n`;
             if (team.hp === 0 && prevHp > 0) {
-              logMsg += `  🚨 第 ${i} 隊 HP 降為 0，進入瀕死狀態！\n`;
+              team.recoveryRoundsLeft = 2;
+              logMsg += `  🚨 第 ${i} 隊 HP 降為 0，進入瀕死狀態！(需 2 回合恢復)\n`;
             }
           } else {
             logMsg += `• 第 ${i} 隊防禦 ${defVal}，完美抵擋！\n`;
           }
-          const input = safeGet(`input-${i}`);
           if (input) input.value = 0;
         }
 
@@ -1454,6 +1750,21 @@
 
         for (let i = 1; i <= 6; i++) {
           const team = teams[i - 1];
+          const input = safeGet(`input-${i}`);
+
+          if (team.hp === 0 && team.recoveryRoundsLeft > 0) {
+            team.recoveryRoundsLeft--;
+            if (team.recoveryRoundsLeft <= 0) {
+              team.recoveryRoundsLeft = 0;
+              team.hp = team.maxHp;
+              logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
+            } else {
+              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態，本回合無法出擊（恢復倒數 ${team.recoveryRoundsLeft} 回合）\n`;
+            }
+            if (input) input.value = 0;
+            continue;
+          }
+
           const atkVal = getTeamInputValue(i);
           const overflowDmg = Math.max(0, atkVal - calculatedPower);
 
@@ -1464,7 +1775,6 @@
           } else {
             logMsg += `• 第 ${i} 隊攻擊 ${atkVal}，未突破護盾。\n`;
           }
-          const input = safeGet(`input-${i}`);
           if (input) input.value = 0;
         }
 
@@ -1480,6 +1790,7 @@
       isDragonAttacking = !isDragonAttacking;
 
       showMessage(`⚔️ 第 ${settledRound} 回合結算報告`, logMsg.trim(), 'battle', 10000);
+      addHistoryLog(`⚔️ 第 ${settledRound} 回合結算`, logMsg.trim());
 
       updateStatusUI();
       updatePhaseUI();
@@ -1491,7 +1802,7 @@
 
       currentRound = 1;
       isDragonAttacking = true;
-      dragonHp = 300;
+      dragonHp = 250;
       activeStatus.atkDebuff = false;
       activeStatus.defDebuff = false;
       activeStatus.pierce = false;
@@ -1499,6 +1810,7 @@
       for (let i = 0; i < 6; i++) {
         teams[i].hp = teams[i].maxHp;
         teams[i].totalDamage = 0;
+        teams[i].recoveryRoundsLeft = 0;
         const input = safeGet(`input-${i + 1}`);
         if (input) input.value = 0;
       }
@@ -1507,11 +1819,13 @@
       updateStatusUI();
       updatePhaseUI();
       updateTeamCardsUI();
+      addHistoryLog('⚠️ 重置戰況', '所有巨龍與騎士團的生命值、狀態、回合數均已重置為初始狀態。');
     }
 
     updateStatusUI();
     updatePhaseUI();
     updateTeamCardsUI();
+    renderHistoryList();
   </script>
 </body>
 </html>

@@ -594,7 +594,6 @@
       box-shadow: 0 0 10px var(--gold-glow);
     }
 
-    .btn-reset { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: #7f1d1d; }
 
     /* MODAL POPUP */
     .modal-overlay {
@@ -974,7 +973,6 @@
 
         <div class="dragon-controls">
           <button class="btn-action btn-settle" onclick="settleRound()">⚔️ 結算本回合攻防與傷害</button>
-          <button class="btn-action btn-reset" onclick="resetBattle()">⚠️ 重置戰力與狀態</button>
         </div>
       </div>
 
@@ -1125,7 +1123,7 @@
       11: { title: "巨龍攻擊 (11點)", tag: "奇數 - 巨龍打擊", desc: "巨龍揮舞利爪橫掃前線。", effect: "巨龍本輪發動 11 點攻擊力。", counter: "將基礎戰力設為 11 點。" },
       13: { title: "巨龍攻擊 (13點)", tag: "奇數 - 巨龍打擊", desc: "滾燙高溫龍息噴湧而至！", effect: "巨龍本輪發動 13 點攻擊力。", counter: "將基礎戰力設為 13 點。" },
       15: { title: "巨龍攻擊 (15點)", tag: "奇數 - 重力打擊", desc: "巨龍傾注龍力發動強襲！", effect: "巨龍本輪發動 15 點攻擊力。", counter: "將基礎戰力設為 15 點。" },
-      17: { title: "掠奪威脅", tag: "奇數 - 道具掠奪", desc: "貪婪巨龍鎖定擁有最多物資的小隊！", effect: "對道具最多的兩隊發動 17 點攻擊，或該隊選擇損失 1 個道具。", counter: "選擇目標小隊進行結算。" },
+      17: { title: "掠奪威脅", tag: "奇數 - 傷害鎖定", desc: "憤怒巨龍鎖定累積傷害最高的小隊！", effect: "對傷害最高的兩隊發動 17 點攻擊，或該隊選擇損失 1 個道具。", counter: "選擇目標小隊進行結算。" },
       19: { title: "滅世試煉", tag: "奇數 - 全場危機", desc: "巨龍啟動終極審判魔陣！", effect: "所有小隊點數和需要超過 65 點，否則每個小隊死去一顆骰子！", counter: "輸入點數後點擊【🎲 檢定全場點數 >65】即可一鍵驗證！" }
     };
 
@@ -1275,7 +1273,7 @@
        例如 "images/dragon.jpg"（需將圖片與本 HTML 放在同個資料夾）。
        若留空字串 ""，會自動顯示下面的 DRAGON_IMAGE_FALLBACK 純色占位圖。
        ===================================================================== */
-    const DRAGON_IMAGE_URL = "FB_IMG_1704464075296.jpg";
+    const DRAGON_IMAGE_URL = "Downloads\FB_IMG_1704464075296.jpg";
     // 找不到圖片、或 DRAGON_IMAGE_URL 留空時使用的備用圖（SVG 占位圖，可自行替換）
     const DRAGON_IMAGE_FALLBACK = "data:image/svg+xml;utf8," + encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
@@ -1710,8 +1708,10 @@
               team.hp = team.maxHp;
               logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
             } else {
-              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態（恢復倒數 ${team.recoveryRoundsLeft} 回合），但仍可用剩餘骰子防禦！\n`;
+              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態，本回合無法防禦（恢復倒數 ${team.recoveryRoundsLeft} 回合）\n`;
             }
+            if (input) input.value = 0;
+            continue;
           }
 
           const defVal = getTeamInputValue(i);
@@ -1757,8 +1757,10 @@
               team.hp = team.maxHp;
               logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
             } else {
-              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態（恢復倒數 ${team.recoveryRoundsLeft} 回合），但仍可用剩餘骰子出擊！\n`;
+              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態，本回合無法出擊（恢復倒數 ${team.recoveryRoundsLeft} 回合）\n`;
             }
+            if (input) input.value = 0;
+            continue;
           }
 
           const atkVal = getTeamInputValue(i);
@@ -1785,37 +1787,17 @@
       currentRound++;
       isDragonAttacking = !isDragonAttacking;
 
+      if (powerInput) {
+        powerInput.value = 0;
+      }
+      updateCalculatedPower();
+
       showMessage(`⚔️ 第 ${settledRound} 回合結算報告`, logMsg.trim(), 'battle', 10000);
       addHistoryLog(`⚔️ 第 ${settledRound} 回合結算`, logMsg.trim());
 
       updateStatusUI();
       updatePhaseUI();
       updateTeamCardsUI();
-    }
-
-    function resetBattle() {
-      if (!confirm("確定要重置地下城戰況與所有騎士團狀態嗎？")) return;
-
-      currentRound = 1;
-      isDragonAttacking = true;
-      dragonHp = 250;
-      activeStatus.atkDebuff = false;
-      activeStatus.defDebuff = false;
-      activeStatus.pierce = false;
-
-      for (let i = 0; i < 6; i++) {
-        teams[i].hp = teams[i].maxHp;
-        teams[i].totalDamage = 0;
-        teams[i].recoveryRoundsLeft = 0;
-        const input = safeGet(`input-${i + 1}`);
-        if (input) input.value = 0;
-      }
-
-      updateDragonHpUI();
-      updateStatusUI();
-      updatePhaseUI();
-      updateTeamCardsUI();
-      addHistoryLog('⚠️ 重置戰況', '所有巨龍與騎士團的生命值、狀態、回合數均已重置為初始狀態。');
     }
 
     updateStatusUI();

@@ -244,6 +244,55 @@
       white-space: nowrap;
     }
 
+    .loot17-panel {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px dashed var(--border-bronze);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .loot17-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .loot17-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+
+    .loot17-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      padding: 5px 4px;
+      border-radius: 4px;
+      border: 1px dashed var(--border-bronze);
+      background: rgba(0,0,0,0.25);
+    }
+
+    .loot17-toggle input[type="checkbox"] {
+      width: 13px;
+      height: 13px;
+      cursor: pointer;
+    }
+
+    .loot17-toggle:has(input:checked) {
+      color: var(--gold-bright);
+      border-color: var(--parchment-gold);
+      background: rgba(212, 175, 55, 0.15);
+    }
+
     .dmg-input {
       width: 100%;
       background: rgba(10, 6, 4, 0.9);
@@ -525,6 +574,16 @@
       background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
     }
 
+    .btn-loot {
+      background: linear-gradient(180deg, #b45309 0%, #7c2d12 100%);
+      border-color: var(--parchment-gold);
+      color: #ffffff;
+    }
+
+    .btn-loot:hover {
+      background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
+    }
+
     .active-status-list {
       display: flex;
       flex-wrap: wrap;
@@ -594,6 +653,25 @@
       box-shadow: 0 0 10px var(--gold-glow);
     }
 
+
+    .btn-apply-event {
+      background: linear-gradient(180deg, #15803d 0%, #14532d 100%);
+      border: 1px solid var(--heal-green);
+      color: #fff;
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 0.85rem;
+      padding: 9px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 4px;
+      transition: all 0.2s;
+    }
+    .btn-apply-event:hover {
+      background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+    }
 
     /* MODAL POPUP */
     .modal-overlay {
@@ -936,12 +1014,6 @@
             </div>
 
             <div class="buff-btn-grid">
-              <button class="btn-modifier" id="btnAtkDebuff" onclick="toggleStatus('atkDebuff')">
-                📉 下次龍攻 -25%
-              </button>
-              <button class="btn-modifier" id="btnDefDebuff" onclick="toggleStatus('defDebuff')">
-                🛡️ 下次龍防 -25%
-              </button>
               <button class="btn-modifier btn-heal" onclick="openHealModal()">
                 ❤️‍🩹 回復生命值
               </button>
@@ -954,6 +1026,25 @@
               <button class="btn-modifier" onclick="checkTotalSum65()">
                 🎲 檢定全場點數 >65
               </button>
+            </div>
+
+            <div class="loot17-panel">
+              <div class="panel-subtitle" onclick="toggleLoot17Panel()">
+                <span>💰 事件17：掠奪威脅 － 目標隊伍 <span id="loot17ToggleIcon">▶</span></span>
+              </div>
+              <div class="loot17-body" id="loot17Body" style="display: none;">
+                <div class="loot17-grid" id="loot17Grid">
+                  <label class="loot17-toggle"><input type="checkbox" id="loot17-1">第一隊</label>
+                  <label class="loot17-toggle"><input type="checkbox" id="loot17-2">第二隊</label>
+                  <label class="loot17-toggle"><input type="checkbox" id="loot17-3">第三隊</label>
+                  <label class="loot17-toggle"><input type="checkbox" id="loot17-4">第四隊</label>
+                  <label class="loot17-toggle"><input type="checkbox" id="loot17-5">第五隊</label>
+                  <label class="loot17-toggle"><input type="checkbox" id="loot17-6">第六隊</label>
+                </div>
+                <button class="btn-modifier btn-loot" style="width: 100%;" onclick="resolveLoot17()">
+                  ✅ 結算已勾選隊伍 (17點)
+                </button>
+              </div>
             </div>
 
             <div class="history-panel">
@@ -1064,6 +1155,7 @@
           <p id="modalCounter">應對建議...</p>
         </div>
       </div>
+      <button class="btn-apply-event" id="applyEventBtn">✅ 套用此事件效果</button>
     </div>
   </div>
 
@@ -1123,7 +1215,7 @@
       11: { title: "巨龍攻擊 (11點)", tag: "奇數 - 巨龍打擊", desc: "巨龍揮舞利爪橫掃前線。", effect: "巨龍本輪發動 11 點攻擊力。", counter: "將基礎戰力設為 11 點。" },
       13: { title: "巨龍攻擊 (13點)", tag: "奇數 - 巨龍打擊", desc: "滾燙高溫龍息噴湧而至！", effect: "巨龍本輪發動 13 點攻擊力。", counter: "將基礎戰力設為 13 點。" },
       15: { title: "巨龍攻擊 (15點)", tag: "奇數 - 重力打擊", desc: "巨龍傾注龍力發動強襲！", effect: "巨龍本輪發動 15 點攻擊力。", counter: "將基礎戰力設為 15 點。" },
-      17: { title: "掠奪威脅", tag: "奇數 - 傷害鎖定", desc: "憤怒巨龍鎖定累積傷害最高的小隊！", effect: "對傷害最高的兩隊發動 17 點攻擊，或該隊選擇損失 1 個道具。", counter: "選擇目標小隊進行結算。" },
+      17: { title: "掠奪威脅", tag: "奇數 - 道具掠奪", desc: "憤怒巨龍鎖定傷害最高的小隊！", effect: "對傷害最高的兩隊發動 17 點攻擊，或該隊選擇損失 1 個道具。", counter: "選擇目標小隊進行結算。" },
       19: { title: "滅世試煉", tag: "奇數 - 全場危機", desc: "巨龍啟動終極審判魔陣！", effect: "所有小隊點數和需要超過 65 點，否則每個小隊死去一顆骰子！", counter: "輸入點數後點擊【🎲 檢定全場點數 >65】即可一鍵驗證！" }
     };
 
@@ -1188,6 +1280,8 @@
     const evenGrid = document.getElementById('evenGrid');
     const oddGrid = document.getElementById('oddGrid');
 
+    let currentModalNum = null;
+
     function createCard(num, isEven) {
       const data = eventsData[num];
       const card = document.createElement('div');
@@ -1207,6 +1301,13 @@
     }
     if (modalOverlay) {
       modalOverlay.onclick = (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); };
+    }
+
+    const applyEventBtnEl = safeGet('applyEventBtn');
+    if (applyEventBtnEl) {
+      applyEventBtnEl.onclick = () => {
+        if (currentModalNum !== null) applyEvent(currentModalNum);
+      };
     }
 
     const healModalOverlay = safeGet('healModalOverlay');
@@ -1255,6 +1356,8 @@
       const modalCounter = safeGet('modalCounter');
       if (!modalNum || !modalTitle || !modalTag || !modalDesc || !modalEffect || !modalCounter || !modalOverlay) return;
 
+      currentModalNum = num;
+
       modalNum.textContent = num;
       modalNum.className = `modal-dice-num ${isEven ? 'even' : 'odd'}`;
       modalTitle.textContent = data.title;
@@ -1267,13 +1370,136 @@
     }
 
     /* =====================================================================
+       ⚡ 事件套用：翻卡後點【✅ 套用此事件效果】，依編號自動執行對應機制，
+       並寫入歷史紀錄。凡是需要主持人額外操作的（回復、指定攻擊、道具交易、
+       開合跳提醒等），會另外彈出提示或開啟對應面板。
+       ===================================================================== */
+    function applyEvent(num) {
+      const data = eventsData[num];
+      if (!data) return;
+
+      const powerInput = safeGet('dragonPowerInput');
+
+      switch (num) {
+        // ---- 偶數：巨龍防禦固定點數 ----
+        case 8: case 12: case 14: case 16: case 18:
+          if (powerInput) { powerInput.value = num; updateCalculatedPower(); }
+          logAndClose(`已將巨龍基礎戰力設為 ${num} 點（防禦）。`);
+          break;
+
+        case 10:
+          if (powerInput) { powerInput.value = 10; updateCalculatedPower(); }
+          logAndClose(`已將巨龍基礎戰力設為 10 點（防禦）。💥 別忘了帶動全場做 10 下開合跳！`);
+          break;
+
+        case 20:
+          logAndClose(`請於接下來彈出的面板中，勾選【🐉 巨龍】並確認回復量。`);
+          modalOverlay.classList.remove('active');
+          openHealModal();
+          return;
+
+        // ---- 奇數：巨龍攻擊固定點數 ----
+        case 9:
+          if (powerInput) { powerInput.value = 9; updateCalculatedPower(); }
+          logAndClose(`已將巨龍基礎戰力設為 9 點（攻擊）。💥 別忘了帶動全場做 9 下開合跳！`);
+          break;
+
+        case 11: case 13: case 15:
+          if (powerInput) { powerInput.value = num; updateCalculatedPower(); }
+          logAndClose(`已將巨龍基礎戰力設為 ${num} 點（攻擊）。`);
+          break;
+
+        // ---- 狀態類 ----
+        case 1:
+          activeStatus.atkDebuff = true;
+          updateStatusUI();
+          logAndClose(`已套用【📉 下次龍攻 -25%】，下次巨龍攻擊會自動折算。`);
+          break;
+
+        case 2:
+          activeStatus.defDebuff = true;
+          updateStatusUI();
+          logAndClose(`已套用【🛡️ 下次龍防 -25%】，下次巨龍防禦會自動折算。`);
+          break;
+
+        case 4:
+        case 6:
+          activeStatus.pierce = true;
+          updateStatusUI();
+          logAndClose(`已套用【💥 破防直傷模式】，本回合結算時將無視巨龍防禦（提醒：此卡規則上僅限「${num === 4 ? '奇數' : '偶數'}」骰子生效，實際判定請主持人自行掌握）。`);
+          break;
+
+        case 19:
+          logAndClose(`事件已翻出，請各隊輸入點數後，點擊狀態面板中的【🎲 檢定全場點數 >65】按鈕進行驗證。`);
+          break;
+
+        // ---- 需要另外開面板 / 純提示的事件 ----
+        case 3:
+          logAndClose(`已宣布事件：開啟黑市交易，請各小隊自行決定是否購買/使用戰術卡與道具（此環節不涉及數值計算）。`);
+          break;
+
+        case 5:
+          activeStatus.pierce = true;
+          updateStatusUI();
+          logAndClose(`已套用【💥 破防直傷模式】，巨龍進入破防狀態，本回合結算時將無視巨龍防禦（本回合不可使用道具，請主持人口頭提醒）。`);
+          break;
+
+        case 7:
+          logAndClose(`已宣布事件：下一回合全體小隊禁止使用任何道具，請主持人口頭提醒各隊。`);
+          break;
+
+        case 17: {
+          const ranked = teams
+            .map((t, idx) => ({ idx, totalDamage: t.totalDamage }))
+            .sort((a, b) => b.totalDamage - a.totalDamage)
+            .slice(0, 2)
+            .filter(t => t.totalDamage > 0 || teams.some(tm => tm.totalDamage > 0));
+
+          // 清空所有隊伍的勾選，再自動勾選傷害最高的兩隊，方便主持人直接確認
+          for (let i = 1; i <= 6; i++) {
+            const box = safeGet(`loot17-${i}`);
+            if (box) box.checked = false;
+          }
+          ranked.forEach(r => {
+            const box = safeGet(`loot17-${r.idx + 1}`);
+            if (box) box.checked = true;
+          });
+          toggleLoot17Panel(true);
+
+          const statusBody = safeGet('statusPanelBody');
+          const statusIcon = safeGet('toggleIcon');
+          if (statusBody && statusBody.style.display === 'none' && statusIcon) {
+            statusBody.style.display = 'flex';
+            statusIcon.textContent = '▼';
+          }
+
+          const names = ranked.map(r => `第${r.idx + 1}騎士團`).join('、') || '（目前尚無隊伍累積傷害，請主持人自行勾選目標）';
+          logAndClose(`已宣布事件：巨龍鎖定累積傷害最高的兩隊 —— ${names}。已在【✨ 戰術狀態與事件控制】面板的「事件17：掠奪威脅」區塊自動幫這兩隊打勾，請確認勾選對象後，在各隊卡片的擲骰欄位輸入防禦點數，再點擊【✅ 結算已勾選隊伍 (17點)】進行結算（或改為手動記錄該隊損失 1 個道具）。`);
+          break;
+        }
+
+        default:
+          logAndClose(`此事件無自動化機制，請依卡面說明手動處理。`);
+      }
+    }
+
+    // 套用事件的收尾動作：寫入歷史紀錄、彈出訊息、關閉翻卡視窗
+    function logAndClose(msg) {
+      const data = eventsData[currentModalNum];
+      const title = data ? `${currentModalNum} 號事件：${data.title}` : `${currentModalNum} 號事件`;
+      showMessage(`⚡ ${title}`, msg, 'battle', 6000);
+      addHistoryLog(`⚡ ${title}`, msg);
+      if (modalOverlay) modalOverlay.classList.remove('active');
+    }
+
+    /* =====================================================================
        🐉 巨龍照片自訂區
        在這裡填入你想要的圖片網址（例如自己上傳到圖床、Imgur、Google Drive
        公開連結等），即可替換中央的巨龍大照片。也可以填入本機相對路徑，
        例如 "images/dragon.jpg"（需將圖片與本 HTML 放在同個資料夾）。
        若留空字串 ""，會自動顯示下面的 DRAGON_IMAGE_FALLBACK 純色占位圖。
        ===================================================================== */
-    const DRAGON_IMAGE_URL = "Downloads\FB_IMG_1704464075296.jpg";
+    const DRAGON_IMAGE_URL = "FB_IMG_1704464075296.jpg";
     // 找不到圖片、或 DRAGON_IMAGE_URL 留空時使用的備用圖（SVG 占位圖，可自行替換）
     const DRAGON_IMAGE_FALLBACK = "data:image/svg+xml;utf8," + encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
@@ -1334,6 +1560,17 @@
       icon.textContent = historyPanelOpen ? '▼' : '▶';
     }
 
+    let loot17PanelOpen = false;
+
+    function toggleLoot17Panel(forceOpen) {
+      const body = safeGet('loot17Body');
+      const icon = safeGet('loot17ToggleIcon');
+      if (!body || !icon) return;
+      loot17PanelOpen = typeof forceOpen === 'boolean' ? forceOpen : !loot17PanelOpen;
+      body.style.display = loot17PanelOpen ? 'flex' : 'none';
+      icon.textContent = loot17PanelOpen ? '▼' : '▶';
+    }
+
     let currentRound = 1;
     let isDragonAttacking = true;
     let dragonMaxHp = 250;
@@ -1375,12 +1612,8 @@
     }
 
     function updateStatusUI() {
-      const btnAtkDebuff = safeGet('btnAtkDebuff');
-      const btnDefDebuff = safeGet('btnDefDebuff');
       const btnPierce = safeGet('btnPierce');
       const listContainer = safeGet('activeStatusList');
-      if (btnAtkDebuff) btnAtkDebuff.classList.toggle('active', activeStatus.atkDebuff);
-      if (btnDefDebuff) btnDefDebuff.classList.toggle('active', activeStatus.defDebuff);
       if (btnPierce) btnPierce.classList.toggle('active', activeStatus.pierce);
       if (!listContainer) { updateCalculatedPower(); return; }
       listContainer.innerHTML = "";
@@ -1588,6 +1821,55 @@
       addHistoryLog('🗡️ 指定隊伍攻擊', attackMsg);
     }
 
+    /* ===== 事件17：掠奪威脅結算 =====
+       ✨戰術狀態與事件控制面板裡有一個「事件17：掠奪威脅」勾選區塊（每隊一個框）。
+       勾選代表該隊被巨龍鎖定為本次事件目標，結算時會直接讀取該隊卡片上
+       原本的「擲骰數值」欄位（跟平常回合結算比點數完全同一套介面／欄位），
+       用一般戰鬥規則計算：溢出傷害 = max(0, 17 - 防禦點數)。
+       未勾選的隊伍完全不受影響、不計算。若某隊要改用「損失1個道具」，
+       主持人不要勾選該隊，直接口頭處理、於歷史紀錄中手動註記即可。 */
+    function resolveLoot17() {
+      const logLines = [];
+
+      for (let i = 1; i <= 6; i++) {
+        const box = safeGet(`loot17-${i}`);
+        if (!box || !box.checked) continue;
+
+        const team = teams[i - 1];
+        if (!team) continue;
+
+        const defVal = getTeamInputValue(i);
+        const overflowDmg = Math.max(0, 17 - defVal);
+        const prevHp = team.hp;
+
+        if (overflowDmg > 0) {
+          team.hp = Math.max(0, team.hp - overflowDmg);
+          logLines.push(`• 第 ${i} 隊防禦 ${defVal}，承受溢出傷害 ${overflowDmg} HP (剩餘 HP: ${team.hp})`);
+          if (team.hp === 0 && prevHp > 0) {
+            team.recoveryRoundsLeft = 2;
+            logLines.push(`  🚨 第 ${i} 隊 HP 降為 0，進入瀕死狀態！(需 2 回合恢復)`);
+          }
+        } else {
+          logLines.push(`• 第 ${i} 隊防禦 ${defVal}，完美抵擋 17 點攻擊！`);
+        }
+
+        const boardInput = safeGet(`input-${i}`);
+        if (boardInput) boardInput.value = 0;
+        box.checked = false;
+      }
+
+      updateTeamCardsUI();
+
+      if (logLines.length === 0) {
+        showMessage('💰 掠奪威脅結算', '目前沒有任何隊伍勾選「事件17：掠奪威脅」目標，本次未做任何結算。', 'info', 3500);
+        return;
+      }
+
+      const summary = logLines.join('\n');
+      showMessage('💰 掠奪威脅結算（事件 17）', summary, 'battle', 7000);
+      addHistoryLog('💰 掠奪威脅結算（事件 17）', summary);
+    }
+
     function updateDragonHpUI() {
       const percent = (dragonHp / dragonMaxHp) * 100;
       const hpBar = safeGet('hpBar');
@@ -1708,10 +1990,8 @@
               team.hp = team.maxHp;
               logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
             } else {
-              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態，本回合無法防禦（恢復倒數 ${team.recoveryRoundsLeft} 回合）\n`;
+              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態（恢復倒數 ${team.recoveryRoundsLeft} 回合），但仍可用剩餘骰子防禦！\n`;
             }
-            if (input) input.value = 0;
-            continue;
           }
 
           const defVal = getTeamInputValue(i);
@@ -1757,10 +2037,8 @@
               team.hp = team.maxHp;
               logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
             } else {
-              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態，本回合無法出擊（恢復倒數 ${team.recoveryRoundsLeft} 回合）\n`;
+              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態（恢復倒數 ${team.recoveryRoundsLeft} 回合），但仍可用剩餘骰子出擊！\n`;
             }
-            if (input) input.value = 0;
-            continue;
           }
 
           const atkVal = getTeamInputValue(i);

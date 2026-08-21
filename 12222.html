@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>小隊計分帳冊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Spectral:wght@400;500;600&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ece3d0;
+    --paper-dark: #ddd0b4;
+    --ink: #2b2420;
+    --ink-soft: #5a4f42;
+    --seal-red: #8a2e2e;
+    --seal-red-dark: #6e2323;
+    --brass: #8a6d2f;
+    --brass-light: #b6923f;
+    --line: #b8a988;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at top left, rgba(138,110,50,0.08), transparent 55%),
+      radial-gradient(ellipse at bottom right, rgba(138,46,46,0.06), transparent 55%),
+      var(--paper);
+    background-attachment: fixed;
+    font-family: 'Spectral', serif;
+    color: var(--ink);
+    padding: 32px 16px 60px;
+  }
+
+  .sheet {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 12px 30px rgba(43,36,32,0.12);
+    position: relative;
+  }
+
+  .sheet::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--line);
+    pointer-events: none;
+  }
+
+  header {
+    text-align: center;
+    padding: 34px 20px 22px;
+    border-bottom: 2px solid var(--brass);
+    margin: 8px 8px 0;
+  }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 30px;
+    font-weight: 700;
+    margin: 8px 0 4px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .rows { padding: 10px 8px 4px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 12px;
+    border-bottom: 1px dashed var(--line);
+    transition: background 0.25s ease;
+  }
+  .row:last-child { border-bottom: none; }
+  .row.flash { background: rgba(138,109,47,0.12); }
+
+  .team-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .team-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--brass);
+    letter-spacing: 0.1em;
+  }
+  .team-name {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .score-block { display: flex; align-items: center; gap: 14px; }
+  .score {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    min-width: 62px;
+    text-align: right;
+    color: var(--ink);
+    transition: color 0.2s ease;
+  }
+  .score.up { color: #2f6e3f; }
+  .score.down { color: var(--seal-red); }
+
+  .btn-pair { display: flex; gap: 6px; align-items: center; }
+
+  .delta-input {
+    width: 52px;
+    height: 34px;
+    border: 1px solid var(--line);
+    background: var(--paper-dark);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 2px;
+    -moz-appearance: textfield;
+  }
+  .delta-input::-webkit-outer-spin-button,
+  .delta-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .delta-input:focus {
+    outline: none;
+    border-color: var(--brass);
+    background: var(--paper);
+  }
+
+  .stamp {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--brass);
+    background: transparent;
+    color: var(--brass);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+  }
+  .stamp:active { transform: scale(0.88); }
+  .stamp.minus {
+    border-color: var(--seal-red);
+    color: var(--seal-red);
+  }
+  .stamp:hover { background: var(--brass); color: var(--paper); }
+  .stamp.minus:hover { background: var(--seal-red); color: var(--paper); }
+  .stamp:disabled { opacity: 0.35; cursor: default; transform: none; background: transparent; color: inherit; }
+
+  footer {
+    text-align: center;
+    padding: 18px 20px 26px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+
+  .status-line {
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 10px 20px 0;
+    min-height: 18px;
+    color: var(--ink-soft);
+  }
+  .status-line.error { color: var(--seal-red); }
+
+  .refresh-btn {
+    display: block;
+    margin: 6px auto 0;
+    background: none;
+    border: 1px solid var(--brass);
+    color: var(--brass);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+  }
+  .refresh-btn:hover { background: var(--brass); color: var(--paper); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media (max-width: 420px) {
+    .team-name { font-size: 16px; }
+    .score { font-size: 20px; min-width: 40px; }
+    .stamp { width: 32px; height: 32px; font-size: 15px; }
+    .delta-input { width: 42px; height: 32px; font-size: 13px; }
+    .score-block { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <header>
+    <div class="eyebrow">Team Ledger · 六隊記分</div>
+    <h1>小隊計分帳冊</h1>
+    <div class="subtitle">即時分數 · 點擊左右印章加減分</div>
+  </header>
+
+  <div class="status-line" id="statusLine">讀取中…</div>
+
+  <div class="rows" id="rows"></div>
+
+  <footer>
+    連線至試算表帳冊
+    <button class="refresh-btn" id="refreshBtn" type="button">重新整理</button>
+  </footer>
+</div>
+
+<script>
+  // ⚠️ 請將下面換成你部署 Google Apps Script 後取得的 Web App 網址（結尾為 /exec）
+  const API_URL = "https://script.google.com/macros/s/AKfycbyvlcPU9sHWuapoZ0NanHDQj8q9g91whwmXIyrUSBge5bpaiyH1_29cPCRBLWPik2eN/exec";
+
+  const rowsEl = document.getElementById('rows');
+  const statusEl = document.getElementById('statusLine');
+  const refreshBtn = document.getElementById('refreshBtn');
+
+  let teams = [];
+  let busy = new Set();
+
+  function setStatus(text, isError) {
+    statusEl.textContent = text;
+    statusEl.classList.toggle('error', !!isError);
+  }
+
+  function render() {
+    rowsEl.innerHTML = '';
+    teams.forEach(team => {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.id = `row-${team.teamIndex}`;
+
+      row.innerHTML = `
+        <div class="team-info">
+          <span class="team-num">TEAM ${String(team.teamIndex + 1).padStart(2, '0')}</span>
+          <span class="team-name">${escapeHtml(team.name)}</span>
+        </div>
+        <div class="score-block">
+          <button class="stamp minus" data-index="${team.teamIndex}" data-dir="-1" type="button">−</button>
+          <div class="score" id="score-${team.teamIndex}">${team.score}</div>
+          <button class="stamp" data-index="${team.teamIndex}" data-dir="1" type="button">+</button>
+          <input class="delta-input" id="delta-${team.teamIndex}" type="number" inputmode="numeric" min="1" value="1">
+        </div>
+      `;
+      rowsEl.appendChild(row);
+    });
+
+    rowsEl.querySelectorAll('.stamp').forEach(btn => {
+      btn.addEventListener('click', onAdjust);
+    });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
+  }
+
+  async function loadScores() {
+    setStatus('讀取中…');
+    try {
+      const res = await fetch(API_URL, { method: 'GET' });
+      const data = await res.json();
+      if (data.status !== 'success') throw new Error(data.message || '讀取失敗');
+      teams = data.data;
+      render();
+      setStatus('已同步 · ' + new Date().toLocaleTimeString('zh-TW'));
+    } catch (err) {
+      setStatus('讀取失敗：' + err.message + '（請確認網址是否正確部署）', true);
+    }
+  }
+
+  async function onAdjust(e) {
+    const btn = e.currentTarget;
+    const teamIndex = Number(btn.dataset.index);
+    const dir = Number(btn.dataset.dir);
+
+    const inputEl = document.getElementById(`delta-${teamIndex}`);
+    const amount = Math.abs(Number(inputEl.value));
+
+    if (!amount || isNaN(amount)) {
+      setStatus('請輸入有效的分數數值', true);
+      inputEl.focus();
+      return;
+    }
+
+    const delta = dir * amount;
+
+    if (busy.has(teamIndex)) return;
+    busy.add(teamIndex);
+
+    const row = document.getElementById(`row-${teamIndex}`);
+    row.querySelectorAll('.stamp').forEach(b => b.disabled = true);
+
+    // 樂觀更新：先在畫面上顯示新分數（下限為 0）
+    const team = teams.find(t => t.teamIndex === teamIndex);
+    const prevScore = team.score;
+    const scoreEl = document.getElementById(`score-${teamIndex}`);
+    team.score = Math.max(0, Number(team.score) + delta);
+    scoreEl.textContent = team.score;
+    scoreEl.classList.add(delta > 0 ? 'up' : 'down');
+    row.classList.add('flash');
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' }, // 避開 CORS preflight
+        body: JSON.stringify({ teamIndex, delta })
+      });
+      const data = await res.json();
+      if (data.status !== 'success') throw new Error(data.message || '更新失敗');
+
+      // 用後端回傳的真實分數校正（避免多人同時操作造成的誤差）
+      team.score = data.newScore;
+      scoreEl.textContent = team.score;
+      setStatus('已更新 · ' + new Date().toLocaleTimeString('zh-TW'));
+    } catch (err) {
+      // 失敗則還原畫面分數
+      team.score = prevScore;
+      scoreEl.textContent = prevScore;
+      setStatus('更新失敗：' + err.message, true);
+    } finally {
+      setTimeout(() => {
+        scoreEl.classList.remove('up', 'down');
+        row.classList.remove('flash');
+      }, 500);
+      row.querySelectorAll('.stamp').forEach(b => b.disabled = false);
+      busy.delete(teamIndex);
+    }
+  }
+
+  refreshBtn.addEventListener('click', loadScores);
+
+  loadScores();
+</script>
+
+</body>
+</html>

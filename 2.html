@@ -18,2273 +18,782 @@
       --gold-glow: rgba(212, 175, 55, 0.5);
       --border-bronze: #8c6d3f;
       --even-blue: #38bdf8;
-      --even-border: #0284c7;
-      --odd-red: #ef4444;
-      --odd-border: #b91c1c;
-      --text-gold: #f3e5ab;
-      --text-muted: #c2b280;
-      --dead-grey: #6b7280;
-      --debuff-purple: #c084fc;
-      --heal-green: #4ade80;
+      --odd-red: #f87171;
+      --text-light: #f3f4f6;
+      --text-muted: #9ca3af;
+      --hp-green: #22c55e;
+      --hp-red: #ef4444;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      user-select: none;
     }
 
     body {
       background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 50% 30%, rgba(60, 20, 10, 0.4) 0%, rgba(10, 5, 2, 0.95) 100%),
-        repeating-linear-gradient(45deg, rgba(20, 12, 8, 0.5) 0px, rgba(20, 12, 8, 0.5) 2px, transparent 2px, transparent 10px);
-      color: var(--text-gold);
-      font-family: 'Noto Serif TC', 'Cinzel', Georgia, serif;
+        radial-gradient(circle at 50% 20%, rgba(180, 83, 9, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(120, 53, 15, 0.1) 0%, transparent 50%);
+      color: var(--text-light);
+      font-family: 'Noto Serif TC', serif;
       min-height: 100vh;
-      padding: 20px 16px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 20px;
     }
 
+    /* Header */
     header {
       text-align: center;
-      margin-bottom: 16px;
+      padding: 15px;
+      background: var(--panel-bg);
+      border: 2px solid var(--border-bronze);
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 15px rgba(212,175,55,0.1);
+      position: relative;
     }
 
     header h1 {
-      font-family: 'Cinzel', 'MedievalSharp', serif;
+      font-family: 'Cinzel', serif;
       font-size: 2.2rem;
-      font-weight: 900;
       color: var(--gold-bright);
-      text-shadow: 0 0 15px rgba(243, 207, 101, 0.6), 2px 2px 4px #000;
       letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    header p {
+      color: var(--parchment-gold);
+      font-size: 1rem;
+      margin-top: 5px;
+    }
+
+    /* Layout Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Main Section */
+    .main-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Boss Status Card */
+    .boss-card {
+      background: var(--panel-bg);
+      border: 2px solid #b91c1c;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 25px rgba(185, 28, 28, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .boss-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .boss-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .boss-avatar {
+      font-size: 2.5rem;
+      filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+    }
+
+    .boss-name-group h2 {
+      font-size: 1.6rem;
+      color: #ef4444;
+      font-family: 'Cinzel', serif;
+    }
+
+    .boss-name-group p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .phase-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .phase-attack {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #f87171;
+    }
+
+    .phase-defense {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+    }
+
+    /* Boss HP Bar */
+    .hp-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hp-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    .hp-bar-bg {
+      height: 24px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 12px;
+      border: 1px solid var(--border-bronze);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #991b1b, #ef4444);
+      width: 100%;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Power Indicator */
+    .power-display {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background: rgba(0,0,0,0.4);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(212,175,55,0.2);
+    }
+
+    .power-item {
+      text-align: center;
+    }
+
+    .power-item .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
       margin-bottom: 4px;
     }
 
-    .medieval-divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin: 4px 0;
-      color: var(--parchment-gold);
-      font-size: 1rem;
-    }
-
-    .medieval-divider::before, .medieval-divider::after {
-      content: '';
-      height: 2px;
-      width: 100px;
-      background: linear-gradient(90deg, transparent, var(--border-bronze), transparent);
-    }
-
-    .board-container {
-      width: 100%;
-      max-width: 1420px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+    .power-item .value {
+      font-size: 1.5rem;
       font-family: 'Cinzel', serif;
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-    }
-
-    .title-even { color: var(--even-blue); }
-    .title-odd { color: var(--odd-red); }
-
-    .dice-grid {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 8px;
-    }
-
-    .dice-card {
-      background: linear-gradient(180deg, rgba(45, 30, 20, 0.95) 0%, rgba(20, 14, 10, 0.95) 100%);
-      border: 2px solid var(--border-bronze);
-      border-radius: 8px;
-      padding: 6px 4px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 4px 8px rgba(0, 0, 0, 0.6);
-    }
-
-    .dice-card.even { border-color: var(--even-border); }
-    .dice-card.odd { border-color: var(--odd-border); }
-
-    .dice-card:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.9);
-    }
-
-    .dice-number {
-      font-family: 'Cinzel', serif;
-      font-size: 1.4rem;
-      font-weight: 900;
-      line-height: 1;
-      margin-bottom: 2px;
-    }
-
-    .dice-card.even .dice-number { color: var(--even-blue); }
-    .dice-card.odd .dice-number { color: var(--odd-red); }
-
-    .dice-name {
-      font-size: 0.75rem;
-      color: var(--text-gold);
-      font-weight: 700;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      height: 2.3em;
-    }
-
-    /* BATTLE CENTER LAYOUT */
-    .battle-center-layout {
-      display: grid;
-      grid-template-columns: 320px 1fr 320px;
-      gap: 16px;
-      align-items: stretch;
-    }
-
-    .teams-column {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .team-card {
-      background: linear-gradient(135deg, rgba(35, 23, 16, 0.95) 0%, rgba(18, 12, 8, 0.95) 100%);
-      border: 2px solid var(--border-bronze);
-      border-radius: 8px;
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
-    }
-
-    .team-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .team-name {
-      font-family: 'Cinzel', serif;
-      font-size: 0.95rem;
-      font-weight: 800;
+      font-weight: bold;
       color: var(--gold-bright);
     }
 
-    .team-status-tag {
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
+    /* Active Buffs / Debuffs */
+    .modifiers-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .status-alive { background: rgba(34, 197, 94, 0.2); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.4); }
-    .status-downed { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-
-    .team-hp-container {
-      width: 100%;
-      height: 8px;
-      background: #000;
+    .mod-tag {
+      font-size: 0.8rem;
+      padding: 4px 10px;
       border-radius: 4px;
+      background: rgba(212, 175, 55, 0.15);
       border: 1px solid var(--border-bronze);
-      overflow: hidden;
+      color: var(--gold-bright);
     }
 
-    .team-hp-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #16a34a, #4ade80);
-      width: 100%;
-      transition: width 0.4s ease;
+    .mod-tag.debuff {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+      color: #f87171;
     }
 
-    .team-stats-row {
+    /* Team Cards Container */
+    .teams-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 3px 8px;
-      border-radius: 4px;
-      border: 1px dashed rgba(212, 175, 55, 0.3);
-      font-size: 0.75rem;
     }
 
-    .team-dmg-stat {
-      color: #fca5a5;
+    .teams-header h3 {
+      font-size: 1.3rem;
+      color: var(--parchment-gold);
+      font-family: 'Cinzel', serif;
+    }
+
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+    }
+
+    .team-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-bronze);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .team-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    .team-card.eliminated {
+      opacity: 0.5;
+      filter: grayscale(80%);
+    }
+
+    .team-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(212,175,55,0.2);
+      padding-bottom: 8px;
+    }
+
+    .team-name {
       font-weight: bold;
+      font-size: 1.1rem;
+      color: var(--gold-bright);
+    }
+
+    .team-hp-badge {
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .team-hp-bar {
+      height: 10px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .team-hp-fill {
+      height: 100%;
+      background: var(--hp-green);
+      width: 100%;
+      transition: width 0.3s;
     }
 
     .team-input-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
     }
 
     .team-input-group label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .loot17-panel {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px dashed var(--border-bronze);
-      border-radius: 8px;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .loot17-body {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .loot17-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 5px;
-    }
-
-    .loot17-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      user-select: none;
-      padding: 5px 4px;
-      border-radius: 4px;
-      border: 1px dashed var(--border-bronze);
-      background: rgba(0,0,0,0.25);
-    }
-
-    .loot17-toggle input[type="checkbox"] {
-      width: 13px;
-      height: 13px;
-      cursor: pointer;
-    }
-
-    .loot17-toggle:has(input:checked) {
-      color: var(--gold-bright);
-      border-color: var(--parchment-gold);
-      background: rgba(212, 175, 55, 0.15);
-    }
-
-    .dmg-input {
-      width: 100%;
-      background: rgba(10, 6, 4, 0.9);
-      border: 1px solid var(--border-bronze);
-      color: #fff;
-      padding: 4px;
-      border-radius: 4px;
-      text-align: center;
-      font-family: 'Cinzel', serif;
-      font-weight: bold;
-      font-size: 0.95rem;
-    }
-
-    .btn-quick {
-      background: linear-gradient(180deg, rgba(80, 55, 30, 0.8) 0%, rgba(40, 25, 10, 0.8) 100%);
-      border: 1px solid var(--border-bronze);
-      color: var(--text-gold);
-      padding: 4px 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: 'Cinzel', serif;
-      font-weight: bold;
-      font-size: 0.75rem;
-    }
-
-    /* DRAGON CENTER PANEL & INTERACTIVE CONTROLS */
-    .dragon-center {
-      background: radial-gradient(circle, rgba(45, 15, 10, 0.92) 0%, rgba(15, 8, 5, 0.98) 100%);
-      border: 3px double var(--parchment-gold);
-      border-radius: 14px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
-    }
-
-    .phase-banner {
-      width: 100%;
-      padding: 6px;
-      border-radius: 6px;
-      text-align: center;
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
-      font-size: 1rem;
-      letter-spacing: 1px;
-      border: 1px solid var(--border-bronze);
-      cursor: pointer;
-      user-select: none;
-      transition: filter 0.15s, transform 0.1s;
-    }
-
-    .phase-banner:hover { filter: brightness(1.2); }
-    .phase-banner:active { transform: scale(0.98); }
-
-    .phase-attack { background: rgba(185, 28, 28, 0.3); color: #fca5a5; border-color: #ef4444; }
-    .phase-defense { background: rgba(3, 105, 161, 0.3); color: #7dd3fc; border-color: #38bdf8; }
-
-    .dragon-header-box {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-    }
-
-    .dragon-avatar {
-      font-size: 2.8rem;
-      text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
-    }
-
-    /* 巨龍大照片 */
-    .dragon-portrait-wrap {
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 3px solid var(--parchment-gold);
-      box-shadow: 0 0 24px rgba(212, 175, 55, 0.35), inset 0 0 20px rgba(0,0,0,0.6);
-      margin-bottom: 4px;
-      position: relative;
-    }
-
-    .dragon-portrait {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-      background: #100908;
-    }
-
-    .dragon-portrait-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
-      padding: 18px 10px 6px;
-      text-align: center;
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
       font-size: 0.85rem;
-      color: var(--gold-bright);
-      letter-spacing: 1px;
-      pointer-events: none;
-    }
-
-    /* 歷史紀錄面板 */
-    .history-panel {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--border-bronze);
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .history-entry {
-      background: rgba(255,255,255,0.04);
-      border-left: 3px solid var(--border-bronze);
-      border-radius: 0 6px 6px 0;
-      padding: 6px 8px;
-      font-size: 0.72rem;
-      line-height: 1.4;
       color: var(--text-muted);
-    }
-
-    .history-entry .history-entry-title {
-      font-family: 'Cinzel', serif;
-      font-weight: 800;
-      font-size: 0.75rem;
-      color: var(--gold-bright);
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 2px;
-    }
-
-    .history-entry .history-entry-time {
-      font-weight: 400;
-      color: var(--text-muted);
-      font-size: 0.68rem;
-      white-space: nowrap;
-    }
-
-    .history-entry-body {
-      white-space: pre-line;
-      color: var(--text-gold);
-    }
-
-    .history-empty { font-size: 0.7rem; color: #888; text-align: center; padding: 8px 0; }
-
-    .dragon-info {
       flex: 1;
     }
 
-    .dragon-info h2 {
-      font-family: 'Cinzel', serif;
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: var(--gold-bright);
-    }
-
-    .hp-bar-container {
-      width: 100%;
-      height: 20px;
-      background: #000;
-      border-radius: 10px;
-      border: 2px solid var(--border-bronze);
-      overflow: hidden;
-      position: relative;
-      margin-top: 4px;
-    }
-
-    .hp-bar {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #991b1b, #dc2626, #f59e0b);
-      transition: width 0.4s ease;
-    }
-
-    .hp-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: 'Cinzel', serif;
-      font-size: 0.78rem;
-      font-weight: 900;
-      color: #fff;
-      text-shadow: 0 0 5px #000;
-    }
-
-    .status-panel {
-      background: rgba(0, 0, 0, 0.5);
+    .team-input-group input[type="number"] {
+      width: 70px;
+      padding: 6px;
+      background: rgba(0,0,0,0.6);
       border: 1px solid var(--border-bronze);
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+      text-align: center;
     }
 
-    .panel-subtitle {
-      font-size: 0.85rem;
-      font-weight: bold;
-      color: var(--gold-bright);
-      border-bottom: 1px dashed var(--border-bronze);
-      padding-bottom: 6px;
+    .team-stats {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.2s;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.2);
+      padding: 6px;
+      border-radius: 4px;
     }
 
-    .panel-subtitle:hover { color: #fff; }
+    /* Sidebar / Control Panel */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-    .status-panel-body {
+    .control-panel {
+      background: var(--panel-bg);
+      border: 2px solid var(--border-bronze);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .control-panel h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-bright);
+      font-size: 1.2rem;
+      border-bottom: 1px solid var(--border-bronze);
+      padding-bottom: 8px;
+    }
+
+    .control-group {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-top: 4px;
-      transition: all 0.3s ease;
     }
 
-    .buff-btn-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
+    .control-group label {
+      font-size: 0.85rem;
+      color: var(--parchment-gold);
     }
 
-    .btn-modifier {
-      background: rgba(30, 20, 15, 0.9);
+    select, input[type="number"].btn-input {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0,0,0,0.6);
       border: 1px solid var(--border-bronze);
-      color: var(--text-gold);
-      padding: 6px 8px;
       border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.78rem;
+      color: var(--text-light);
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
       font-weight: bold;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      transition: all 0.2s;
+      gap: 8px;
+      font-size: 0.95rem;
     }
 
-    .btn-modifier.active {
-      background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%);
-      border-color: var(--debuff-purple);
-      color: #f3e8ff;
-      box-shadow: 0 0 8px rgba(192, 132, 252, 0.5);
+    .btn-primary {
+      background: linear-gradient(135deg, #d4af37, #996515);
+      color: #000;
+      box-shadow: 0 2px 10px rgba(212,175,55,0.3);
     }
 
-    .btn-heal {
-      background: linear-gradient(180deg, #15803d 0%, #166534 100%);
-      border-color: var(--heal-green);
-      color: #ffffff;
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #f3cf65, #b8860b);
+      transform: translateY(-1px);
     }
 
-    .btn-heal:hover {
-      background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border-bronze);
+      color: var(--text-light);
     }
 
-    .btn-attack {
-      background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%);
-      border-color: #dc2626;
-      color: #ffffff;
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.15);
     }
 
-    .btn-attack:hover {
-      background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
+    .btn-danger {
+      background: linear-gradient(135deg, #991b1b, #7f1d1d);
+      color: #fff;
     }
 
-    .btn-loot {
-      background: linear-gradient(180deg, #b45309 0%, #7c2d12 100%);
-      border-color: var(--parchment-gold);
-      color: #ffffff;
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
     }
 
-    .btn-loot:hover {
-      background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
-    }
-
-    .active-status-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      min-height: 22px;
-    }
-
-    .active-badge {
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-      background: rgba(192, 132, 252, 0.2);
-      color: #e9d5ff;
-      border: 1px solid rgba(192, 132, 252, 0.5);
-    }
-
-    .dragon-power-setting {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .event-card {
       background: rgba(0,0,0,0.4);
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-    }
-
-    .dragon-power-input {
-      width: 65px;
-      background: rgba(0,0,0,0.8);
-      border: 1px solid var(--parchment-gold);
-      color: var(--gold-bright);
-      text-align: center;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 4px;
-      padding: 2px;
-    }
-
-    .dragon-controls {
+      border: 1px dashed var(--border-bronze);
+      border-radius: 8px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      margin-top: auto;
     }
 
-    .btn-action {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--border-bronze);
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-settle {
-      background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
+    .event-card .title {
+      font-weight: bold;
       color: var(--gold-bright);
-      border-color: var(--parchment-gold);
+      font-size: 0.95rem;
     }
 
-    .btn-settle:hover {
-      background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
-      box-shadow: 0 0 10px var(--gold-glow);
-    }
-
-
-    .btn-apply-event {
-      background: linear-gradient(180deg, #15803d 0%, #14532d 100%);
-      border: 1px solid var(--heal-green);
-      color: #fff;
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
+    .event-card .desc {
       font-size: 0.85rem;
-      padding: 9px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 4px;
-      transition: all 0.2s;
-    }
-    .btn-apply-event:hover {
-      background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
-      box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+      color: var(--text-muted);
+      line-height: 1.4;
     }
 
-    /* ===== 戰役結束畫面 ===== */
+    /* History Log */
+    .history-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-bronze);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 300px;
+    }
+
+    .history-panel h4 {
+      font-size: 1rem;
+      color: var(--parchment-gold);
+    }
+
+    .history-list {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 5px;
+    }
+
+    .history-item {
+      font-size: 0.8rem;
+      padding: 8px;
+      background: rgba(0,0,0,0.3);
+      border-left: 3px solid var(--border-bronze);
+      border-radius: 0 4px 4px 0;
+      line-height: 1.3;
+    }
+
+    /* Modal Popups */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--panel-bg);
+      border: 2px solid var(--border-bronze);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 480px;
+      padding: 25px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .modal-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--gold-bright);
+      border-bottom: 1px solid var(--border-bronze);
+      padding-bottom: 8px;
+    }
+
+    .modal-body {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-light);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* Settlement Summary Banner */
+    .summary-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--panel-bg);
+      border: 2px solid var(--gold-bright);
+      border-radius: 8px;
+      padding: 15px 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+      z-index: 999;
+      display: none;
+      max-width: 350px;
+    }
+
     .ending-overlay {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(5, 2, 1, 0.94);
-      backdrop-filter: blur(6px);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-      z-index: 200; padding: 20px;
+      inset: 0;
+      background: rgba(10, 5, 3, 0.95);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
     }
-    .ending-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .ending-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
     .ending-box {
-      width: 100%; max-width: 640px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: var(--panel-bg);
-      background-image: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, rgba(10, 5, 2, 0.97) 70%);
-      border: 3px double var(--parchment-gold);
-      border-radius: 14px;
-      padding: 28px 24px;
+      background: rgba(26, 18, 12, 0.98);
+      border: 2px solid var(--gold-bright);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 650px;
+      padding: 35px;
       text-align: center;
-      box-shadow: 0 0 60px rgba(212, 175, 55, 0.35), 0 25px 60px rgba(0, 0, 0, 0.9);
-      animation: endingRise 0.5s ease;
-    }
-    @keyframes endingRise {
-      from { transform: translateY(24px) scale(0.97); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+      box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    .ending-emblem { font-size: 3rem; margin-bottom: 4px; text-shadow: 0 0 20px var(--gold-glow); }
+    .ending-emblem {
+      font-size: 4rem;
+    }
 
     .ending-title {
-      font-family: 'Cinzel', 'MedievalSharp', serif;
-      font-size: 1.7rem;
-      font-weight: 900;
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
       color: var(--gold-bright);
-      text-shadow: 0 0 15px rgba(243, 207, 101, 0.6), 2px 2px 4px #000;
-      letter-spacing: 2px;
-      margin-bottom: 6px;
+      text-shadow: 0 0 15px var(--gold-glow);
     }
 
     .ending-subtitle {
+      font-size: 1rem;
       color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 18px;
-      line-height: 1.6;
     }
 
     .ending-summary-row {
-      display: flex; justify-content: center; gap: 24px;
-      margin-bottom: 18px; flex-wrap: wrap;
-    }
-    .ending-summary-item {
-      background: var(--card-bg);
-      border: 1px solid var(--border-bronze);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      background: rgba(0,0,0,0.4);
+      padding: 15px;
       border-radius: 8px;
-      padding: 8px 16px;
-      min-width: 110px;
-    }
-    .ending-summary-item .label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; }
-    .ending-summary-item .value { font-size: 1.15rem; font-weight: 900; color: var(--gold-bright); font-family: 'Cinzel', serif; }
-
-    .ending-rank-title {
-      font-family: 'Cinzel', serif;
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--parchment-gold);
-      letter-spacing: 2px;
-      margin: 14px 0 10px;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .ending-rank-title::before, .ending-rank-title::after {
-      content: ''; height: 1px; width: 60px;
-      background: linear-gradient(90deg, transparent, var(--border-bronze), transparent);
-    }
-
-    .ending-rank-list { display: flex; flex-direction: column; gap: 8px; text-align: left; }
-    .ending-rank-item {
-      display: flex; align-items: center; gap: 12px;
-      background: var(--card-bg);
       border: 1px solid var(--border-bronze);
-      border-radius: 8px;
-      padding: 8px 14px;
-      position: relative;
-    }
-    .ending-rank-item.rank-1 { border-color: var(--gold-bright); box-shadow: 0 0 12px rgba(243, 207, 101, 0.35); }
-    .ending-rank-medal { font-size: 1.3rem; width: 30px; text-align: center; flex-shrink: 0; }
-    .ending-rank-name { flex: 1; font-weight: 700; color: var(--text-gold); font-size: 0.9rem; }
-    .ending-rank-status { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
-    .ending-rank-dmg { font-weight: 900; color: var(--gold-bright); font-family: 'Cinzel', serif; font-size: 0.95rem; white-space: nowrap; }
-    .ending-rank-item.status-downed-row .ending-rank-status { color: var(--dead-grey); }
-
-    .ending-actions { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .btn-ending-close {
-      background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
-      border: 1px solid var(--parchment-gold);
-      color: var(--gold-bright);
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
-      font-size: 0.85rem;
-      padding: 10px 22px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-ending-close:hover { background: linear-gradient(180deg, #d97706 0%, #92400e 100%); box-shadow: 0 0 10px var(--gold-glow); }
-
-    /* MODAL POPUP */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(5px);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
-      z-index: 100; padding: 20px;
     }
 
-    .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-    .modal-content {
-      background: #f4e4bc;
-      background-image: radial-gradient(circle at 50% 50%, #f7eacc 0%, #e5cb93 100%);
-      border: 6px double #5c3d11;
-      border-radius: 10px;
-      width: 100%; max-width: 540px;
-      padding: 24px; position: relative; color: #2b1a08;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
-    }
-
-    .modal-header {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
-      border-bottom: 2px solid #a67c38; padding-bottom: 10px;
-    }
-
-    .modal-dice-num {
-      font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 900;
-      width: 55px; height: 55px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-
-    .modal-dice-num.even { background: #0284c7; color: #fff; }
-    .modal-dice-num.odd { background: #b91c1c; color: #fff; }
-
-    .modal-title-box h3 {
-      font-family: 'Cinzel', 'Noto Serif TC', serif; font-size: 1.3rem; font-weight: 900; color: #422006;
-    }
-
-    .modal-tag {
-      display: inline-block; font-size: 0.75rem; padding: 2px 10px; border-radius: 10px; font-weight: 700; color: #fff;
-    }
-    .modal-tag.even { background: #0369a1; }
-    .modal-tag.odd { background: #991b1b; }
-
-    .modal-body { display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: #261605; }
-
-    .detail-block {
-      background: rgba(255, 255, 255, 0.45); border-left: 4px solid #8c5a1a; padding: 8px 12px; border-radius: 0 6px 6px 0;
-    }
-
-    .detail-block h4 { font-family: 'Cinzel', serif; font-size: 0.8rem; color: #713f12; margin-bottom: 2px; font-weight: 900; }
-
-    .close-btn {
-      position: absolute; top: 12px; right: 16px; background: transparent; border: none; color: #713f12; font-size: 1.6rem; font-weight: bold; cursor: pointer;
-    }
-
-    @media (max-width: 1200px) {
-      .battle-center-layout { grid-template-columns: 1fr; }
-      .teams-column { display: grid; grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 900px) {
-      .dice-grid { grid-template-columns: repeat(5, 1fr); }
-      .teams-column { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 500px) {
-      .dice-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* ===== 頁面內訊息面板 (取代 alert) ===== */
-    .msg-panel-container {
-      position: fixed;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 300;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      max-width: 460px;
-      padding: 0 16px;
-      pointer-events: none;
-    }
-
-    .msg-panel {
-      pointer-events: auto;
-      background: linear-gradient(180deg, rgba(38, 26, 18, 0.98) 0%, rgba(18, 12, 8, 0.98) 100%);
-      border: 2px solid var(--border-bronze);
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(212,175,55,0.15);
-      padding: 12px 14px;
-      color: var(--text-gold);
-      font-size: 0.85rem;
-      line-height: 1.5;
-      opacity: 0;
-      transform: translateY(-12px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      max-height: 260px;
-      overflow-y: auto;
-    }
-
-    .msg-panel.show { opacity: 1; transform: translateY(0); }
-
-    .msg-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
-      font-size: 0.85rem;
-    }
-
-    .msg-panel-close {
-      background: transparent;
-      border: none;
+    .ending-summary-item .label {
+      font-size: 0.8rem;
       color: var(--text-muted);
-      font-size: 1.1rem;
-      cursor: pointer;
-      line-height: 1;
-      padding: 0 2px;
-    }
-    .msg-panel-close:hover { color: #fff; }
-
-    .msg-panel-body { white-space: pre-line; }
-
-    .msg-panel.type-heal .msg-panel-header { color: var(--heal-green); }
-    .msg-panel.type-battle .msg-panel-header { color: #fca5a5; }
-    .msg-panel.type-success .msg-panel-header { color: #86efac; }
-    .msg-panel.type-fail .msg-panel-header { color: #fca5a5; }
-    .msg-panel.type-info .msg-panel-header { color: var(--gold-bright); }
-
-    .msg-panel.type-fail { border-color: #b91c1c; }
-    .msg-panel.type-success { border-color: #16a34a; }
-
-    /* ===== 自訂回血面板 (取代 prompt) ===== */
-    .heal-modal-content {
-      background: #f4e4bc;
-      background-image: radial-gradient(circle at 50% 50%, #f7eacc 0%, #e5cb93 100%);
-      border: 6px double #5c3d11;
-      border-radius: 10px;
-      width: 100%; max-width: 340px;
-      padding: 22px; color: #2b1a08;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.9);
-      text-align: center;
     }
 
-    .heal-modal-content h3 {
-      font-family: 'Cinzel', serif; font-size: 1.1rem; color: #422006; margin-bottom: 14px;
-    }
-
-    .heal-modal-input {
-      width: 100px;
-      font-size: 1.2rem;
-      text-align: center;
-      padding: 6px;
-      border: 2px solid #8c5a1a;
-      border-radius: 6px;
-      background: #fff;
-      color: #2b1a08;
-      font-family: 'Cinzel', serif;
+    .ending-summary-item .value {
+      font-size: 1.3rem;
       font-weight: bold;
-      margin-bottom: 6px;
+      color: var(--gold-bright);
+      margin-top: 4px;
     }
-
-    .heal-modal-hint { font-size: 0.7rem; color: #8c6d3f; margin-bottom: 14px; }
-
-    .team-select-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      text-align: left;
-      margin-bottom: 10px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .team-select-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      background: rgba(255,255,255,0.4);
-      border: 1px solid #b98d4a;
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .team-select-item.downed { border-color: #b91c1c; background: rgba(239,68,68,0.15); }
-
-    .team-select-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
-
-    .team-select-item-hp { font-size: 0.75rem; color: #713f12; }
-
-    .team-select-quick {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-
-    .team-select-quick button {
-      font-size: 0.72rem;
-      padding: 3px 10px;
-      border-radius: 6px;
-      border: 1px solid #8c5a1a;
-      background: transparent;
-      color: #713f12;
-      cursor: pointer;
-    }
-
-    .team-select-quick button:hover { background: rgba(140, 90, 26, 0.15); }
-
-    .heal-modal-actions { display: flex; gap: 10px; justify-content: center; }
-
-    .heal-modal-actions button {
-      padding: 8px 18px;
-      border-radius: 6px;
-      border: 1px solid #8c5a1a;
-      font-family: 'Cinzel', serif;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .heal-modal-confirm { background: #15803d; color: #fff; }
-    .heal-modal-cancel { background: transparent; color: #713f12; }
-
-    /* ===== 輸入防呆提示樣式 ===== */
-    .input-invalid { border-color: #ef4444 !important; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>⚔️ 7919 迎新：龍與地下城 ⚔️</h1>
-    <div class="medieval-divider">✦ D20 戰術盤 ✦</div>
+    <h1>7919 迎新：地下城主戰術盤</h1>
+    <p>— 巨龍棋局 D20 BOSS 戰場控制台 —</p>
   </header>
 
-  <div class="board-container">
+  <div class="dashboard-grid">
     
-    <div>
-      <div class="section-title title-even" style="margin-bottom: 8px;">
-        🛡️ 上排：偶數點數 ── 巨龍防禦與結界模式 (Even)
-      </div>
-      <div class="dice-grid" id="evenGrid"></div>
-    </div>
-
-    <div class="battle-center-layout">
+    <div class="main-section">
       
-      <div class="teams-column">
-        <div class="team-card" id="card-1">
-          <div class="team-header">
-            <span class="team-name">第一騎士團</span>
-            <span class="team-status-tag status-alive" id="status-1">HP: 20/20</span>
+      <div class="boss-card">
+        <div class="boss-header">
+          <div class="boss-title">
+            <div class="boss-avatar">🐉</div>
+            <div class="boss-name-group">
+              <h2>遠古紅龍 · 伊格尼斯</h2>
+              <p>古老強大的烈焰之主</p>
+            </div>
           </div>
-          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-1"></div></div>
-          <div class="team-stats-row">
-            <span class="team-dmg-stat" id="dmg-stat-1">⚔️ 累積造成傷害：0 HP</span>
-          </div>
-          <div class="team-input-group">
-            <label id="label-1">擲骰數值：</label>
-            <input type="number" class="dmg-input" id="input-1" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
-            <button class="btn-quick" onclick="addValue(1, 5)">+5</button>
-            <button class="btn-quick" onclick="addValue(1, 10)">+10</button>
+          <div id="phaseBadge" class="phase-badge phase-defense">
+            🛡️ 巨龍防禦階段
           </div>
         </div>
 
-        <div class="team-card" id="card-2">
-          <div class="team-header">
-            <span class="team-name">第二騎士團</span>
-            <span class="team-status-tag status-alive" id="status-2">HP: 20/20</span>
+        <div class="hp-container">
+          <div class="hp-info">
+            <span>巨龍生命值 (HP)</span>
+            <span id="bossHpText">400 / 400</span>
           </div>
-          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-2"></div></div>
-          <div class="team-stats-row">
-            <span class="team-dmg-stat" id="dmg-stat-2">⚔️ 累積造成傷害：0 HP</span>
-          </div>
-          <div class="team-input-group">
-            <label id="label-2">擲骰數值：</label>
-            <input type="number" class="dmg-input" id="input-2" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
-            <button class="btn-quick" onclick="addValue(2, 5)">+5</button>
-            <button class="btn-quick" onclick="addValue(2, 10)">+10</button>
+          <div class="hp-bar-bg">
+            <div id="bossHpBar" class="hp-bar-fill" style="width: 100%;"></div>
           </div>
         </div>
 
-        <div class="team-card" id="card-3">
-          <div class="team-header">
-            <span class="team-name">第三騎士團</span>
-            <span class="team-status-tag status-alive" id="status-3">HP: 20/20</span>
+        <div class="power-display">
+          <div class="power-item">
+            <div class="label">當前回合</div>
+            <div id="roundText" class="value">1</div>
           </div>
-          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-3"></div></div>
-          <div class="team-stats-row">
-            <span class="team-dmg-stat" id="dmg-stat-3">⚔️ 累積造成傷害：0 HP</span>
+          <div class="power-item">
+            <div class="label" id="powerLabel">當前防禦需求 (DC)</div>
+            <div id="bossPowerValue" class="value">10</div>
           </div>
-          <div class="team-input-group">
-            <label id="label-3">擲骰數值：</label>
-            <input type="number" class="dmg-input" id="input-3" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
-            <button class="btn-quick" onclick="addValue(3, 5)">+5</button>
-            <button class="btn-quick" onclick="addValue(3, 10)">+10</button>
+          <div class="power-item">
+            <div class="label">巨龍狀態</div>
+            <div id="bossStatusText" class="value" style="font-size: 1.1rem; color: #22c55e;">狀態良好</div>
           </div>
         </div>
+
+        <div id="modifiersList" class="modifiers-list">
+          </div>
       </div>
 
-      <div class="dragon-center">
-        <div class="phase-banner phase-attack" id="phaseBanner" onclick="togglePhase()" title="點擊切換攻防階段">
-          🔥 第 1 回合：巨龍攻擊階段（小隊擲骰防禦）
+      <div class="teams-container">
+        <div class="teams-header" style="margin-bottom: 12px;">
+          <h3>⚔️ 騎士團小隊陣容 (6隊)</h3>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">請於下方輸入各隊點數或執行小隊動作</span>
         </div>
 
-        <div class="dragon-portrait-wrap">
-          <img class="dragon-portrait" id="dragonPortrait" src="" alt="遠古紅龍">
-          <div class="dragon-portrait-caption">🐉 遠古紅龍 (Boss)</div>
-        </div>
-
-        <div class="dragon-header-box">
-          <div class="dragon-info">
-            <h2>遠古紅龍 (Boss)</h2>
-            <div class="hp-bar-container">
-              <div class="hp-bar" id="hpBar"></div>
-              <div class="hp-text" id="hpText">生命值：400 / 400 HP</div>
-            </div>
+        <div class="teams-grid" id="teamsGrid">
           </div>
-        </div>
-
-        <div class="status-panel">
-          <div class="panel-subtitle" onclick="toggleStatusPanel()">
-            <span>✨ 戰術狀態與事件控制 <span id="toggleIcon">▶</span></span>
-            <span id="effectivePowerDisplay" style="color: var(--gold-bright);">目前威力: 15</span>
-          </div>
-
-          <div class="status-panel-body" id="statusPanelBody" style="display: none;">
-            <div class="dragon-power-setting">
-              <span id="powerLabel">巨龍基礎戰力：</span>
-              <input type="number" class="dragon-power-input" id="dragonPowerInput" value="15" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); updateCalculatedPower()" onblur="sanitizeInput(this,{min:0,max:999}); updateCalculatedPower()">
-            </div>
-
-            <div class="buff-btn-grid">
-              <button class="btn-modifier btn-heal" onclick="openHealModal()">
-                ❤️‍🩹 回復生命值
-              </button>
-              <button class="btn-modifier btn-attack" onclick="openAttackModal()">
-                🗡️ 指定隊伍攻擊龍
-              </button>
-              <button class="btn-modifier" id="btnPierce" onclick="toggleStatus('pierce')">
-                💥 破防直傷模式
-              </button>
-              <button class="btn-modifier" onclick="checkTotalSum65()">
-                🎲 檢定全場點數 >80
-              </button>
-            </div>
-
-            <div class="loot17-panel">
-              <div class="panel-subtitle" onclick="toggleLoot17Panel()">
-                <span>💰 事件17：掠奪威脅 － 目標隊伍 <span id="loot17ToggleIcon">▶</span></span>
-              </div>
-              <div class="loot17-body" id="loot17Body" style="display: none;">
-                <div class="loot17-grid" id="loot17Grid">
-                  <label class="loot17-toggle"><input type="checkbox" id="loot17-1">第一隊</label>
-                  <label class="loot17-toggle"><input type="checkbox" id="loot17-2">第二隊</label>
-                  <label class="loot17-toggle"><input type="checkbox" id="loot17-3">第三隊</label>
-                  <label class="loot17-toggle"><input type="checkbox" id="loot17-4">第四隊</label>
-                  <label class="loot17-toggle"><input type="checkbox" id="loot17-5">第五隊</label>
-                  <label class="loot17-toggle"><input type="checkbox" id="loot17-6">第六隊</label>
-                </div>
-                <button class="btn-modifier btn-loot" style="width: 100%;" onclick="resolveLoot17()">
-                  ✅ 結算已勾選隊伍 (22點)
-                </button>
-              </div>
-            </div>
-
-            <div class="history-panel">
-              <div class="panel-subtitle" onclick="toggleHistoryPanel()">
-                <span>📜 歷史紀錄 <span id="historyToggleIcon">▶</span></span>
-                <span style="color: var(--text-muted); font-size: 0.7rem;" id="historyCount">共 0 筆</span>
-              </div>
-              <div class="history-list" id="historyList" style="display: none;">
-                <div class="history-empty">尚無歷史紀錄</div>
-              </div>
-            </div>
-          </div>
-          <div class="active-status-list" id="activeStatusList">
-            <span style="font-size: 0.7rem; color: #888;">無生效中的特殊狀態</span>
-          </div>
-        </div>
-
-        <div class="dragon-controls">
-          <button class="btn-action btn-settle" onclick="settleRound()">⚔️ 結算本回合攻防與傷害</button>
-        </div>
-      </div>
-
-      <div class="teams-column">
-        <div class="team-card" id="card-4">
-          <div class="team-header">
-            <span class="team-name">第四騎士團</span>
-            <span class="team-status-tag status-alive" id="status-4">HP: 20/20</span>
-          </div>
-          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-4"></div></div>
-          <div class="team-stats-row">
-            <span class="team-dmg-stat" id="dmg-stat-4">⚔️ 累積造成傷害：0 HP</span>
-          </div>
-          <div class="team-input-group">
-            <label id="label-4">擲骰數值：</label>
-            <input type="number" class="dmg-input" id="input-4" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
-            <button class="btn-quick" onclick="addValue(4, 5)">+5</button>
-            <button class="btn-quick" onclick="addValue(4, 10)">+10</button>
-          </div>
-        </div>
-
-        <div class="team-card" id="card-5">
-          <div class="team-header">
-            <span class="team-name">第五騎士團</span>
-            <span class="team-status-tag status-alive" id="status-5">HP: 20/20</span>
-          </div>
-          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-5"></div></div>
-          <div class="team-stats-row">
-            <span class="team-dmg-stat" id="dmg-stat-5">⚔️ 累積造成傷害：0 HP</span>
-          </div>
-          <div class="team-input-group">
-            <label id="label-5">擲骰數值：</label>
-            <input type="number" class="dmg-input" id="input-5" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
-            <button class="btn-quick" onclick="addValue(5, 5)">+5</button>
-            <button class="btn-quick" onclick="addValue(5, 10)">+10</button>
-          </div>
-        </div>
-
-        <div class="team-card" id="card-6">
-          <div class="team-header">
-            <span class="team-name">第六騎士團</span>
-            <span class="team-status-tag status-alive" id="status-6">HP: 20/20</span>
-          </div>
-          <div class="team-hp-container"><div class="team-hp-bar" id="hp-bar-6"></div></div>
-          <div class="team-stats-row">
-            <span class="team-dmg-stat" id="dmg-stat-6">⚔️ 累積造成傷害：0 HP</span>
-          </div>
-          <div class="team-input-group">
-            <label id="label-6">擲骰數值：</label>
-            <input type="number" class="dmg-input" id="input-6" value="0" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3)" onblur="sanitizeInput(this,{min:0,max:999})">
-            <button class="btn-quick" onclick="addValue(6, 5)">+5</button>
-            <button class="btn-quick" onclick="addValue(6, 10)">+10</button>
-          </div>
-        </div>
       </div>
 
     </div>
 
-    <div>
-      <div class="section-title title-odd" style="margin-bottom: 8px;">
-        ⚔️ 下排：奇數點數 ── 巨龍咆哮與特殊突發事件 (Odd)
+    <div class="sidebar">
+      
+      <div class="control-panel">
+        <h3>🎲 命運 D20 事件控制</h3>
+
+        <div class="control-group">
+          <label for="d20Select">選擇 D20 骰子點數 (1 - 20)：</label>
+          <select id="d20Select" onchange="handleD20Change()">
+            <option value="">-- 請選擇 D20 點數 --</option>
+            <option value="1">1 (奇數 - 巨龍攻擊 20 點)</option>
+            <option value="2">2 (偶數 - 巨龍防禦 16 點)</option>
+            <option value="3">3 (奇數 - 巨龍攻擊 18 點)</option>
+            <option value="4">4 (偶數 - 巨龍防禦 14 點)</option>
+            <option value="5">5 (奇數 - 巨龍攻擊 16 點)</option>
+            <option value="6">6 (偶數 - 巨龍防禦 12 點)</option>
+            <option value="7">7 (奇數 - 巨龍攻擊 14 點)</option>
+            <option value="8">8 (偶數 - 巨龍防禦 10 點)</option>
+            <option value="9">9 (奇數 - 黑市交易)</option>
+            <option value="10">10 (偶數 - 防禦減少 25%)</option>
+            <option value="11">11 (奇數 - 攻擊減少 25%)</option>
+            <option value="12">12 (偶數 - 破甲傷害)</option>
+            <option value="13">13 (奇數 - 禁用道具)</option>
+            <option value="14">14 (偶數 - 巨龍防禦 8 點)</option>
+            <option value="15">15 (奇數 - 全場點數檢定 > 80)</option>
+            <option value="16">16 (偶數 - 巨龍防禦 10 點)</option>
+            <option value="17">17 (奇數 - 指定小隊直接傷害)</option>
+            <option value="18">18 (偶數 - 巨龍恢復 50 HP)</option>
+            <option value="19">19 (奇數 - 巨龍攻擊 15 點)</option>
+            <option value="20">20 (偶數 - 巨龍防禦 12 點)</option>
+          </select>
+        </div>
+
+        <div class="event-card" id="eventCard" style="display: none;">
+          <div class="title" id="eventTitle">事件名稱</div>
+          <div class="desc" id="eventDesc">事件詳細說明...</div>
+        </div>
+
+        <button class="btn btn-primary" onclick="settleRound()">
+          ⚡ 結算本回合 (Settle Round)
+        </button>
+
+        <div style="display: flex; gap: 8px; margin-top: 5px;">
+          <button class="btn btn-secondary" style="flex: 1;" onclick="openHealModal()">
+            💖 治療/加血
+          </button>
+          <button class="btn btn-secondary" style="flex: 1;" onclick="openDirectDmgModal()">
+            💥 直接傷害
+          </button>
+        </div>
+
+        <button class="btn btn-danger" style="margin-top: 5px;" onclick="resetBattle()">
+          🔄 重置戰局 (Reset)
+        </button>
       </div>
-      <div class="dice-grid" id="oddGrid"></div>
+
+      <div class="history-panel">
+        <h4>📜 戰局歷史紀錄</h4>
+        <div class="history-list" id="historyList">
+          <div class="history-item">戰鬥正式開始，巨龍發出咆哮！</div>
+        </div>
+      </div>
+
     </div>
 
   </div>
 
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-content">
-      <button class="close-btn" id="closeBtn">&times;</button>
-      <div class="modal-header">
-        <div class="modal-dice-num" id="modalNum">--</div>
-        <div class="modal-title-box">
-          <h3 id="modalTitle">事件名稱</h3>
-          <span class="modal-tag" id="modalTag">事件類型</span>
-        </div>
+  <div class="modal-overlay" id="targetModal">
+    <div class="modal-box">
+      <div class="modal-title">🎯 指定小隊選擇</div>
+      <div class="modal-body" id="targetModalBody">
+        D20 觸發 Event 17：請選擇遭受巨龍直接打擊的小隊。
       </div>
+      <div id="targetSelectList" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('targetModal')">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="actionModal">
+    <div class="modal-box">
+      <div class="modal-title" id="actionModalTitle">小隊狀態調整</div>
       <div class="modal-body">
-        <div class="detail-block">
-          <h4>📖 戰場殘卷背景故事</h4>
-          <p id="modalDesc">故事描述...</p>
+        <div class="control-group" style="margin-bottom: 10px;">
+          <label>選擇目標小隊：</label>
+          <select id="actionTeamSelect"></select>
         </div>
-        <div class="detail-block">
-          <h4>⚡ 戰略與機制影響</h4>
-          <p id="modalEffect">機制效果...</p>
-        </div>
-        <div class="detail-block">
-          <h4>🛡️ 騎士團破局對策</h4>
-          <p id="modalCounter">應對建議...</p>
+        <div class="control-group">
+          <label id="actionValueLabel">數值：</label>
+          <input type="number" id="actionValueInput" value="5" min="1" max="20" class="btn-input">
         </div>
       </div>
-      <button class="btn-apply-event" id="applyEventBtn">✅ 套用此事件效果</button>
-    </div>
-  </div>
-
-  <!-- 頁面內訊息面板：取代 alert() -->
-  <div class="msg-panel-container" id="msgPanelContainer"></div>
-
-  <!-- 回復生命值面板（巨龍與騎士團合併，可指定回復量） -->
-  <div class="modal-overlay" id="healModalOverlay">
-    <div class="heal-modal-content">
-      <h3>❤️‍🩹 回復生命值</h3>
-      <div class="team-select-list" id="healSelectList"></div>
-      <div class="team-select-quick">
-        <button type="button" onclick="setAllHealChecks(true)">全選</button>
-        <button type="button" onclick="setAllHealChecks(false)">全不選</button>
-      </div>
-      <input type="number" class="heal-modal-input" id="healAmountInput" value="20" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); this.classList.remove('input-invalid')">
-      <div class="heal-modal-hint">已勾選的對象，將各自回復指定的生命值（不會超過上限）</div>
-      <div class="heal-modal-actions">
-        <button class="heal-modal-confirm" onclick="confirmHeal()">確認回復</button>
-        <button class="heal-modal-cancel" onclick="closeHealModal()">取消</button>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('actionModal')">取消</button>
+        <button class="btn btn-primary" onclick="confirmActionModal()">確認執行</button>
       </div>
     </div>
   </div>
-
-  <!-- 指定隊伍攻擊龍面板 -->
-  <div class="modal-overlay" id="attackModalOverlay">
-    <div class="heal-modal-content">
-      <h3>🗡️ 指定隊伍攻擊巨龍</h3>
-      <div class="team-select-list" id="attackSelectList"></div>
-      <input type="number" class="heal-modal-input" id="attackAmountInput" value="10" min="0" max="999" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3); this.classList.remove('input-invalid')">
-      <div class="heal-modal-hint">選擇一個騎士團，直接對巨龍造成指定傷害（將計入該隊累積傷害）</div>
-      <div class="heal-modal-actions">
-        <button class="heal-modal-confirm" onclick="confirmAttack()">確認攻擊</button>
-        <button class="heal-modal-cancel" onclick="closeAttackModal()">取消</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const eventsData = {
-      2: { title: "龍防削弱", tag: "偶數 - 狀態影響", desc: "巨龍防線出現破綻！", effect: "下次巨龍防禦力 -25%。", counter: "開啟【🛡️ 下次龍防 -25%】，下次防禦自動折算！" },
-      4: { title: "奇數破防", tag: "偶數 - 特殊打擊", desc: "奇數能量產生共鳴衝擊！", effect: "本回合「奇數骰子」直接造成傷害（無視巨龍防禦）。", counter: "啟用【💥 破防直傷模式】進行計算。" },
-      6: { title: "偶數破防", tag: "偶數 - 特殊打擊", desc: "偶數衝擊力爆發，震撼巨龍！", effect: "本回合「偶數骰子」直接造成傷害（無視巨龍防禦）。", counter: "啟用【💥 破防直傷模式】進行計算。" },
-      8: { title: "巨龍防禦 (8點)", tag: "偶數 - 護盾防護", desc: "巨龍展開防禦姿態。", effect: "巨龍本輪獲得 8 點防禦力。", counter: "將巨龍基礎戰力設為 8 點。" },
-      10: { title: "巨龍防禦 (10點)", tag: "偶數 - 護盾防護", desc: "巨龍發動威壓，召喚工作人員！", effect: "巨龍防禦 10 點 + 💥在場所有工作人員進行 10 下開合跳！💥", counter: "帶動全場氣氛！" },
-      12: { title: "巨龍防禦 (12點)", tag: "偶數 - 護盾防護", desc: "堅硬龍鱗阻擋打擊。", effect: "巨龍本輪獲得 12 點防禦力。", counter: "將巨龍基礎戰力設為 12 點。" },
-      14: { title: "巨龍防禦 (14點)", tag: "偶數 - 護盾防護", desc: "龍息護盾籠罩全身。", effect: "巨龍本輪獲得 14 點防禦力。", counter: "將巨龍基礎戰力設為 14 點。" },
-      16: { title: "巨龍防禦 (16點)", tag: "偶數 - 護盾防護", desc: "古老魔法盾壁展開。", effect: "巨龍本輪獲得 16 點防禦力。", counter: "將巨龍基礎戰力設為 16 點。" },
-      18: { title: "精準狙擊", tag: "偶數 - 破防打擊", desc: "巨龍鎖定弱點，全力貫穿最強的兩擊。", effect: "本回合只計算全場點數最高的兩個骰子（其餘骰子的點數不列入本回合傷害計算），且本次攻擊無視巨龍防禦。", counter: "找出點數最高的兩顆骰子進行結算，其餘忽略；並套用【💥 破防直傷模式】。" },
-      20: { title: "龍回血", tag: "偶數 - 巨龍復甦", desc: "巨龍吸取大地元素，傷口迅速癒合！", effect: "巨龍回復生命值。", counter: "為巨龍補充生命值！" },
-
-      1: { title: "龍攻削弱", tag: "奇數 - 狀態影響", desc: "巨龍攻擊產生破綻，威力大減！", effect: "下次巨龍攻擊力 -25%。", counter: "開啟【📉 下次龍攻 -25%】，下次攻擊自動折算！" },
-      3: { title: "黑市突襲", tag: "奇數 - 特殊交易", desc: "神秘黑市商人於戰場現身！", effect: "開啟黑市交易，各小隊可購買/使用戰術卡與道具。", counter: "開啟道具交易階段。" },
-      5: { title: "巨龍休息", tag: "奇數 - 進攻機會", desc: "巨龍睡著了，現在是偷襲的好機會!", effect: "投擲一顆骰子，決定所造成的傷害。【不可使用道具 】", counter: "設置巨龍為破防狀態。" },
-      7: { title: "禁魔結界", tag: "奇數 - 道具封印", desc: "魔法紊亂爆發，道具暫時失靈！", effect: "下一回合全體小隊不能使用任何道具。", counter: "提醒各小隊本回合禁止使用卡牌。" },
-      9: { title: "巨龍攻擊 (14點)", tag: "奇數 - 狂暴打擊", desc: "巨龍龍爪震地，全場騎士團集體運動！", effect: "巨龍攻擊 14 點 + 💥所有人進行 10 下開合跳！💥", counter: "基礎戰力設為 14 點。" },
-      11: { title: "巨龍攻擊 (16點)", tag: "奇數 - 巨龍打擊", desc: "巨龍揮舞利爪橫掃前線。", effect: "巨龍本輪發動 16 點攻擊力。", counter: "將基礎戰力設為 16 點。" },
-      13: { title: "巨龍攻擊 (18點)", tag: "奇數 - 巨龍打擊", desc: "滾燙高溫龍息噴湧而至！", effect: "巨龍本輪發動 18 點攻擊力。", counter: "將基礎戰力設為 18 點。" },
-      15: { title: "巨龍攻擊 (20點)", tag: "奇數 - 重力打擊", desc: "巨龍傾注龍力發動強襲！", effect: "巨龍本輪發動 20 點攻擊力。", counter: "將基礎戰力設為 20 點。" },
-      17: { title: "掠奪威脅", tag: "奇數 - 道具掠奪", desc: "憤怒巨龍鎖定傷害最高的小隊！", effect: "對傷害最高的兩隊發動 22 點攻擊，或該隊選擇損失 1 個道具。", counter: "選擇目標小隊進行結算。" },
-      19: { title: "滅世試煉", tag: "奇數 - 全場危機", desc: "巨龍啟動終極審判魔陣！", effect: "所有小隊點數和需要超過 80 點，否則每個小隊死去一顆骰子！", counter: "輸入點數後點擊【🎲 檢定全場點數 >80】即可一鍵驗證！" }
-    };
-
-    /* ===== 空值檢查輔助函式 ===== */
-    // 取代裸露的 document.getElementById：找不到元素時不會直接拋錯中斷整支程式，
-    // 只會在 console 留下警告，方便除錯又不影響其他功能繼續運作。
-    function safeGet(id) {
-      const el = document.getElementById(id);
-      if (!el) {
-        console.warn(`⚠️ 找不到元素 #${id}，此次操作已略過`);
-      }
-      return el;
-    }
-
-    /* ===== 頁面內訊息面板 (取代 alert) ===== */
-    function showMessage(title, body, type = 'info', duration = 6000) {
-      const container = safeGet('msgPanelContainer');
-      if (!container) {
-        // 萬一面板容器本身遺失，退回最基本的提示，確保訊息不會憑空消失
-        alert(`${title}\n${body}`);
-        return;
-      }
-
-      const panel = document.createElement('div');
-      panel.className = `msg-panel type-${type}`;
-      panel.innerHTML = `
-        <div class="msg-panel-header">
-          <span>${title}</span>
-          <button class="msg-panel-close" aria-label="關閉">&times;</button>
-        </div>
-        <div class="msg-panel-body">${body}</div>
-      `;
-
-      container.appendChild(panel);
-      requestAnimationFrame(() => panel.classList.add('show'));
-
-      let dismissTimer = setTimeout(() => dismiss(), duration);
-
-      function dismiss() {
-        clearTimeout(dismissTimer);
-        panel.classList.remove('show');
-        setTimeout(() => panel.remove(), 250);
-      }
-
-      panel.querySelector('.msg-panel-close').onclick = dismiss;
-      panel.addEventListener('mouseenter', () => clearTimeout(dismissTimer));
-      panel.addEventListener('mouseleave', () => { dismissTimer = setTimeout(dismiss, 2000); });
-    }
-
-    /* ===== 數值輸入防呆 =====
-       將輸入框內容轉為整數並限制在 [min, max] 範圍內，非數字一律視為 0。
-       在 blur / 結算前呼叫，避免負數、超大值或非數字字串造成計算錯誤。 */
-    function sanitizeInput(el, { min = 0, max = 999 } = {}) {
-      if (!el) return 0;
-      let val = parseInt(el.value, 10);
-      if (isNaN(val)) val = min;
-      val = Math.max(min, Math.min(max, val));
-      el.value = val;
-      return val;
-    }
-
-    const evenGrid = document.getElementById('evenGrid');
-    const oddGrid = document.getElementById('oddGrid');
-
-    let currentModalNum = null;
-
-    function createCard(num, isEven) {
-      const data = eventsData[num];
-      const card = document.createElement('div');
-      card.className = `dice-card ${isEven ? 'even' : 'odd'}`;
-      card.onclick = () => openModal(num, isEven);
-      card.innerHTML = `<div class="dice-number">${num}</div><div class="dice-name">${data.title}</div>`;
-      return card;
-    }
-
-    [2, 4, 6, 8, 10, 12, 14, 16, 18, 20].forEach(num => evenGrid.appendChild(createCard(num, true)));
-    [1, 3, 5, 7, 9, 11, 13, 15, 17, 19].forEach(num => oddGrid.appendChild(createCard(num, false)));
-
-    const modalOverlay = safeGet('modalOverlay');
-    const closeBtnEl = safeGet('closeBtn');
-    if (closeBtnEl && modalOverlay) {
-      closeBtnEl.onclick = () => modalOverlay.classList.remove('active');
-    }
-    if (modalOverlay) {
-      modalOverlay.onclick = (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); };
-    }
-
-    const applyEventBtnEl = safeGet('applyEventBtn');
-    if (applyEventBtnEl) {
-      applyEventBtnEl.onclick = () => {
-        if (currentModalNum !== null) applyEvent(currentModalNum);
-      };
-    }
-
-    const healModalOverlay = safeGet('healModalOverlay');
-    if (healModalOverlay) {
-      healModalOverlay.onclick = (e) => { if (e.target === healModalOverlay) closeHealModal(); };
-    }
-
-    const attackModalOverlay = safeGet('attackModalOverlay');
-    if (attackModalOverlay) {
-      attackModalOverlay.onclick = (e) => { if (e.target === attackModalOverlay) closeAttackModal(); };
-    }
-
-    // 鍵盤支援：按 Escape 關閉目前開啟的彈窗
-    document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape') return;
-      if (modalOverlay && modalOverlay.classList.contains('active')) modalOverlay.classList.remove('active');
-      if (healModalOverlay && healModalOverlay.classList.contains('active')) closeHealModal();
-      if (attackModalOverlay && attackModalOverlay.classList.contains('active')) closeAttackModal();
-    });
-
-    // 回復量／攻擊傷害輸入框：Enter 直接確認
-    const healAmountInputEl = safeGet('healAmountInput');
-    if (healAmountInputEl) {
-      healAmountInputEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') confirmHeal();
-      });
-    }
-    const attackAmountInputEl = safeGet('attackAmountInput');
-    if (attackAmountInputEl) {
-      attackAmountInputEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') confirmAttack();
-      });
-    }
-
-    function openModal(num, isEven) {
-      const data = eventsData[num];
-      if (!data) {
-        console.warn(`⚠️ 找不到編號 ${num} 的事件資料`);
-        return;
-      }
-      const modalNum = safeGet('modalNum');
-      const modalTitle = safeGet('modalTitle');
-      const modalTag = safeGet('modalTag');
-      const modalDesc = safeGet('modalDesc');
-      const modalEffect = safeGet('modalEffect');
-      const modalCounter = safeGet('modalCounter');
-      if (!modalNum || !modalTitle || !modalTag || !modalDesc || !modalEffect || !modalCounter || !modalOverlay) return;
-
-      currentModalNum = num;
-
-      modalNum.textContent = num;
-      modalNum.className = `modal-dice-num ${isEven ? 'even' : 'odd'}`;
-      modalTitle.textContent = data.title;
-      modalTag.textContent = data.tag;
-      modalTag.className = `modal-tag ${isEven ? 'even' : 'odd'}`;
-      modalDesc.textContent = data.desc;
-      modalEffect.textContent = data.effect;
-      modalCounter.textContent = data.counter;
-      modalOverlay.classList.add('active');
-    }
-
-    /* =====================================================================
-       ⚡ 事件套用：翻卡後點【✅ 套用此事件效果】，依編號自動執行對應機制，
-       並寫入歷史紀錄。凡是需要主持人額外操作的（回復、指定攻擊、道具交易、
-       開合跳提醒等），會另外彈出提示或開啟對應面板。
-       ===================================================================== */
-    function applyEvent(num) {
-      const data = eventsData[num];
-      if (!data) return;
-
-      const powerInput = safeGet('dragonPowerInput');
-
-      switch (num) {
-        // ---- 偶數：巨龍防禦固定點數 ----
-        case 8: case 12: case 14: case 16:
-          if (powerInput) { powerInput.value = num; updateCalculatedPower(); }
-          logAndClose(`已將巨龍基礎戰力設為 ${num} 點（防禦）。`);
-          break;
-
-        case 18:
-          activeStatus.pierce = true;
-          updateStatusUI();
-          logAndClose(`已套用【💥 破防直傷模式】。提醒：本回合只計算全場點數最高的兩個骰子，其餘骰子不列入傷害計算，請主持人自行找出並結算。`);
-          break;
-
-        case 10:
-          if (powerInput) { powerInput.value = 10; updateCalculatedPower(); }
-          logAndClose(`已將巨龍基礎戰力設為 10 點（防禦）。💥 別忘了帶動全場做 10 下開合跳！`);
-          break;
-
-        case 20:
-          logAndClose(`請於接下來彈出的面板中，勾選【🐉 巨龍】並確認回復量。`);
-          modalOverlay.classList.remove('active');
-          openHealModal();
-          return;
-
-        // ---- 奇數：巨龍攻擊固定點數 ----
-        case 9:
-          if (powerInput) { powerInput.value = 14; updateCalculatedPower(); }
-          logAndClose(`已將巨龍基礎戰力設為 14 點（攻擊）。💥 別忘了帶動全場做 14 下開合跳！`);
-          break;
-
-        case 11:
-          if (powerInput) { powerInput.value = 16; updateCalculatedPower(); }
-          logAndClose(`已將巨龍基礎戰力設為 16 點（攻擊）。`);
-          break;
-
-        case 13:
-          if (powerInput) { powerInput.value = 18; updateCalculatedPower(); }
-          logAndClose(`已將巨龍基礎戰力設為 18 點（攻擊）。`);
-          break;
-
-        case 15:
-          if (powerInput) { powerInput.value = 20; updateCalculatedPower(); }
-          logAndClose(`已將巨龍基礎戰力設為 20 點（攻擊）。`);
-          break;
-
-          // ---- 狀態類 ----
-        case 1:
-          activeStatus.atkDebuff = true;
-          updateStatusUI();
-          logAndClose(`已套用【📉 下次龍攻 -25%】，下次巨龍攻擊會自動折算。`);
-          break;
-
-        case 2:
-          activeStatus.defDebuff = true;
-          updateStatusUI();
-          logAndClose(`已套用【🛡️ 下次龍防 -25%】，下次巨龍防禦會自動折算。`);
-          break;
-
-        case 4:
-        case 6:
-          activeStatus.pierce = true;
-          updateStatusUI();
-          logAndClose(`已套用【💥 破防直傷模式】，本回合結算時將無視巨龍防禦（提醒：此卡規則上僅限「${num === 4 ? '奇數' : '偶數'}」骰子生效，實際判定請主持人自行掌握）。`);
-          break;
-
-        case 19:
-          logAndClose(`事件已翻出，請各隊輸入點數後，點擊狀態面板中的【🎲 檢定全場點數 >80】按鈕進行驗證。`);
-          break;
-
-        // ---- 需要另外開面板 / 純提示的事件 ----
-        case 3:
-          logAndClose(`已宣布事件：開啟黑市交易，請各小隊自行決定是否購買/使用戰術卡與道具（此環節不涉及數值計算）。`);
-          break;
-
-        case 5:
-          activeStatus.pierce = true;
-          updateStatusUI();
-          logAndClose(`已套用【💥 破防直傷模式】，巨龍進入破防狀態，本回合結算時將無視巨龍防禦（本回合不可使用道具，請主持人口頭提醒）。`);
-          break;
-
-        case 7:
-          logAndClose(`已宣布事件：下一回合全體小隊禁止使用任何道具，請主持人口頭提醒各隊。`);
-          break;
-
-        case 17: {
-          const ranked = teams
-            .map((t, idx) => ({ idx, totalDamage: t.totalDamage }))
-            .sort((a, b) => b.totalDamage - a.totalDamage)
-            .slice(0, 2)
-            .filter(t => t.totalDamage > 0 || teams.some(tm => tm.totalDamage > 0));
-
-          // 清空所有隊伍的勾選，再自動勾選傷害最高的兩隊，方便主持人直接確認
-          for (let i = 1; i <= 6; i++) {
-            const box = safeGet(`loot17-${i}`);
-            if (box) box.checked = false;
-          }
-          ranked.forEach(r => {
-            const box = safeGet(`loot17-${r.idx + 1}`);
-            if (box) box.checked = true;
-          });
-          toggleLoot17Panel(true);
-
-          const statusBody = safeGet('statusPanelBody');
-          const statusIcon = safeGet('toggleIcon');
-          if (statusBody && statusBody.style.display === 'none' && statusIcon) {
-            statusBody.style.display = 'flex';
-            statusIcon.textContent = '▼';
-          }
-
-          const names = ranked.map(r => `第${r.idx + 1}騎士團`).join('、') || '（目前尚無隊伍累積傷害，請主持人自行勾選目標）';
-          logAndClose(`已宣布事件：巨龍鎖定累積傷害最高的兩隊 —— ${names}。已在【✨ 戰術狀態與事件控制】面板的「事件17：掠奪威脅」區塊自動幫這兩隊打勾，請確認勾選對象後，在各隊卡片的擲骰欄位輸入防禦點數，再點擊【✅ 結算已勾選隊伍 (22點)】進行結算（或改為手動記錄該隊損失 1 個道具）。`);
-          break;
-        }
-
-        default:
-          logAndClose(`此事件無自動化機制，請依卡面說明手動處理。`);
-      }
-    }
-
-    // 套用事件的收尾動作：寫入歷史紀錄、彈出訊息、關閉翻卡視窗
-    function logAndClose(msg) {
-      const data = eventsData[currentModalNum];
-      const title = data ? `${currentModalNum} 號事件：${data.title}` : `${currentModalNum} 號事件`;
-      showMessage(`⚡ ${title}`, msg, 'battle', 6000);
-      addHistoryLog(`⚡ ${title}`, msg);
-      if (modalOverlay) modalOverlay.classList.remove('active');
-    }
-
-    /* =====================================================================
-       🐉 巨龍照片自訂區
-       在這裡填入你想要的圖片網址（例如自己上傳到圖床、Imgur、Google Drive
-       公開連結等），即可替換中央的巨龍大照片。也可以填入本機相對路徑，
-       例如 "images/dragon.jpg"（需將圖片與本 HTML 放在同個資料夾）。
-       若留空字串 ""，會自動顯示下面的 DRAGON_IMAGE_FALLBACK 純色占位圖。
-       ===================================================================== */
-    const DRAGON_IMAGE_URL = "";
-    // 找不到圖片、或 DRAGON_IMAGE_URL 留空時使用的備用圖（SVG 占位圖，可自行替換）
-    const DRAGON_IMAGE_FALLBACK = "data:image/svg+xml;utf8," + encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-        <rect width="100%" height="100%" fill="#1a120c"/>
-        <text x="50%" y="50%" font-size="90" text-anchor="middle" dominant-baseline="middle">🐉</text>
-        <text x="50%" y="86%" font-size="18" fill="#d4af37" text-anchor="middle" font-family="serif">請於程式碼 DRAGON_IMAGE_URL 設定巨龍照片</text>
-      </svg>
-    `);
-
-    function setDragonPortrait(url) {
-      const img = safeGet('dragonPortrait');
-      if (!img) return;
-      img.onerror = () => { img.onerror = null; img.src = DRAGON_IMAGE_FALLBACK; };
-      img.src = url && url.trim() !== '' ? url : DRAGON_IMAGE_FALLBACK;
-    }
-    setDragonPortrait(DRAGON_IMAGE_URL);
-
-    /* ===== 歷史紀錄 ===== */
-    const historyLog = []; // { time, title, body }
-    let historyPanelOpen = false;
-
-    function addHistoryLog(title, body) {
-      const now = new Date();
-      const time = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-      historyLog.unshift({ time, title, body });
-      if (historyLog.length > 100) historyLog.length = 100; // 避免無限增長
-      renderHistoryList();
-    }
-
-    function renderHistoryList() {
-      const list = safeGet('historyList');
-      const countEl = safeGet('historyCount');
-      if (countEl) countEl.textContent = `共 ${historyLog.length} 筆`;
-      if (!list) return;
-
-      if (historyLog.length === 0) {
-        list.innerHTML = `<div class="history-empty">尚無歷史紀錄</div>`;
-        return;
-      }
-
-      list.innerHTML = historyLog.map(entry => `
-        <div class="history-entry">
-          <div class="history-entry-title">
-            <span>${entry.title}</span>
-            <span class="history-entry-time">${entry.time}</span>
-          </div>
-          <div class="history-entry-body">${entry.body}</div>
-        </div>
-      `).join('');
-    }
-
-    function toggleHistoryPanel() {
-      const list = safeGet('historyList');
-      const icon = safeGet('historyToggleIcon');
-      if (!list || !icon) return;
-      historyPanelOpen = !historyPanelOpen;
-      list.style.display = historyPanelOpen ? 'flex' : 'none';
-      icon.textContent = historyPanelOpen ? '▼' : '▶';
-    }
-
-    let loot17PanelOpen = false;
-
-    function toggleLoot17Panel(forceOpen) {
-      const body = safeGet('loot17Body');
-      const icon = safeGet('loot17ToggleIcon');
-      if (!body || !icon) return;
-      loot17PanelOpen = typeof forceOpen === 'boolean' ? forceOpen : !loot17PanelOpen;
-      body.style.display = loot17PanelOpen ? 'flex' : 'none';
-      icon.textContent = loot17PanelOpen ? '▼' : '▶';
-    }
-
-    let currentRound = 1;
-    let isDragonAttacking = true;
-    let dragonMaxHp = 400;
-    let dragonHp = 400;
-
-    let activeStatus = {
-      atkDebuff: false,
-      defDebuff: false,
-      pierce: false
-    };
-
-    // simplified team state
-    // recoveryRoundsLeft: 0 表示正常/無需恢復；>0 表示瀕死中，還需經過幾個回合才會自動復原
-    const teams = Array.from({ length: 6 }, () => ({ hp: 20, maxHp: 20, totalDamage: 0, recoveryRoundsLeft: 0 }));
-
-    function toggleStatusPanel() {
-      const body = safeGet('statusPanelBody');
-      const icon = safeGet('toggleIcon');
-      if (!body || !icon) return;
-      if (body.style.display === 'none') {
-        body.style.display = 'flex';
-        icon.textContent = '▼';
-      } else {
-        body.style.display = 'none';
-        icon.textContent = '▶';
-      }
-    }
-
-    function addValue(teamNum, val) {
-      const input = safeGet(`input-${teamNum}`);
-      if (!input) return;
-      const current = sanitizeInput(input, { min: 0, max: 999 });
-      input.value = Math.max(0, Math.min(999, current + val));
-    }
-
-    function toggleStatus(key) {
-      activeStatus[key] = !activeStatus[key];
-      updateStatusUI();
-    }
-
-    function updateStatusUI() {
-      const btnPierce = safeGet('btnPierce');
-      const listContainer = safeGet('activeStatusList');
-      if (btnPierce) btnPierce.classList.toggle('active', activeStatus.pierce);
-      if (!listContainer) { updateCalculatedPower(); return; }
-      listContainer.innerHTML = "";
-
-      let count = 0;
-      if (activeStatus.atkDebuff) {
-        listContainer.innerHTML += `<span class="active-badge">📉 龍攻 -25% 生效中</span>`;
-        count++;
-      }
-      if (activeStatus.defDebuff) {
-        listContainer.innerHTML += `<span class="active-badge">🛡️ 龍防 -25% 生效中</span>`;
-        count++;
-      }
-      if (activeStatus.pierce) {
-        listContainer.innerHTML += `<span class="active-badge" style="border-color:#f87171; color:#fca5a5;">💥 直傷無視防禦</span>`;
-        count++;
-      }
-
-      if (count === 0) {
-        listContainer.innerHTML = `<span style="font-size: 0.7rem; color: #888;">無生效中的特殊狀態</span>`;
-      }
-
-      updateCalculatedPower();
-    }
-
-    function updateCalculatedPower() {
-      const powerInput = safeGet('dragonPowerInput');
-      const display = safeGet('effectivePowerDisplay');
-      if (!powerInput) return;
-
-      const basePower = parseInt(powerInput.value, 10) || 0;
-      let effective = basePower;
-
-      if (isDragonAttacking && activeStatus.atkDebuff) {
-        effective = Math.round(basePower * 0.75);
-      } else if (!isDragonAttacking && activeStatus.defDebuff) {
-        effective = Math.round(basePower * 0.75);
-      }
-
-      if (activeStatus.pierce && !isDragonAttacking) {
-        effective = 0;
-      }
-
-      if (display) display.textContent = `目前威力: ${effective}`;
-    }
-
-    function openHealModal() {
-      const overlay = safeGet('healModalOverlay');
-      const list = safeGet('healSelectList');
-      const amountInput = safeGet('healAmountInput');
-      if (!overlay || !list) return;
-
-      let html = `
-        <label class="team-select-item">
-          <span>🐉 巨龍</span>
-          <span class="team-select-item-hp">HP ${dragonHp}/${dragonMaxHp}</span>
-          <input type="checkbox" id="healCheck-dragon" ${dragonHp < dragonMaxHp ? 'checked' : ''} ${dragonHp === dragonMaxHp ? 'disabled' : ''}>
-        </label>
-      `;
-
-      html += teams.map((team, idx) => {
-        const i = idx + 1;
-        const downed = team.hp === 0;
-        const recoveryNote = downed && team.recoveryRoundsLeft > 0 ? `（恢復倒數 ${team.recoveryRoundsLeft} 回合）` : '';
-        return `
-          <label class="team-select-item ${downed ? 'downed' : ''}">
-            <span>${downed ? '💀' : '⚔️'} 第${i}騎士團</span>
-            <span class="team-select-item-hp">HP ${team.hp}/${team.maxHp}${recoveryNote}</span>
-            <input type="checkbox" id="healCheck-${i}" ${team.hp < team.maxHp ? 'checked' : ''} ${team.hp === team.maxHp ? 'disabled' : ''}>
-          </label>
-        `;
-      }).join('');
-
-      list.innerHTML = html;
-      if (amountInput) {
-        amountInput.value = 20;
-        amountInput.classList.remove('input-invalid');
-      }
-      overlay.classList.add('active');
-    }
-
-    function closeHealModal() {
-      const overlay = safeGet('healModalOverlay');
-      if (overlay) overlay.classList.remove('active');
-    }
-
-    function setAllHealChecks(checked) {
-      const dragonBox = safeGet('healCheck-dragon');
-      if (dragonBox && !dragonBox.disabled) dragonBox.checked = checked;
-      for (let i = 1; i <= 6; i++) {
-        const box = safeGet(`healCheck-${i}`);
-        if (box && !box.disabled) box.checked = checked;
-      }
-    }
-
-    function confirmHeal() {
-      const amountInput = safeGet('healAmountInput');
-      if (!amountInput) return;
-
-      const amount = sanitizeInput(amountInput, { min: 0, max: 999 });
-      if (amount <= 0) {
-        amountInput.classList.add('input-invalid');
-        showMessage('⚠️ 輸入無效', '請輸入大於 0 的回復數值。', 'fail', 3500);
-        return;
-      }
-
-      const healedNames = [];
-
-      const dragonBox = safeGet('healCheck-dragon');
-      if (dragonBox && dragonBox.checked && !dragonBox.disabled) {
-        dragonHp = Math.min(dragonMaxHp, dragonHp + amount);
-        updateDragonHpUI();
-        healedNames.push('🐉 巨龍');
-      }
-
-      for (let i = 1; i <= 6; i++) {
-        const box = safeGet(`healCheck-${i}`);
-        if (box && box.checked && !box.disabled) {
-          const team = teams[i - 1];
-          team.hp = Math.min(team.maxHp, team.hp + amount);
-          team.recoveryRoundsLeft = 0;
-          healedNames.push(`第${i}騎士團`);
-        }
-      }
-
-      updateTeamCardsUI();
-      closeHealModal();
-
-      if (healedNames.length === 0) {
-        showMessage('❤️‍🩹 回復生命值', '沒有選擇任何需要恢復的對象。', 'info', 3500);
-      } else {
-        const msg = `${healedNames.join('、')} 各回復了 ${amount} 點生命值！`;
-        showMessage('❤️‍🩹 回復生命值', msg, 'heal', 4500);
-        addHistoryLog('❤️‍🩹 回復生命值', msg);
-      }
-    }
-
-    function openAttackModal() {
-      const overlay = safeGet('attackModalOverlay');
-      const list = safeGet('attackSelectList');
-      const amountInput = safeGet('attackAmountInput');
-      if (!overlay || !list) return;
-
-      list.innerHTML = teams.map((team, idx) => {
-        const i = idx + 1;
-        const downed = team.hp === 0;
-        const note = downed ? '（瀕死中無法行動）' : '';
-        return `
-          <label class="team-select-item ${downed ? 'downed' : ''}">
-            <span>${downed ? '💀' : '⚔️'} 第${i}騎士團${note}</span>
-            <span class="team-select-item-hp">累積傷害 ${team.totalDamage} HP</span>
-            <input type="radio" name="attackTeamRadio" id="attackTeamRadio-${i}" value="${i}" ${downed ? 'disabled' : ''}>
-          </label>
-        `;
-      }).join('');
-
-      const firstAvailable = teams.findIndex(t => t.hp > 0);
-      if (firstAvailable !== -1) {
-        const radio = safeGet(`attackTeamRadio-${firstAvailable + 1}`);
-        if (radio) radio.checked = true;
-      }
-
-      if (amountInput) {
-        amountInput.value = 10;
-        amountInput.classList.remove('input-invalid');
-      }
-      overlay.classList.add('active');
-    }
-
-    function closeAttackModal() {
-      const overlay = safeGet('attackModalOverlay');
-      if (overlay) overlay.classList.remove('active');
-    }
-
-    function confirmAttack() {
-      const amountInput = safeGet('attackAmountInput');
-      if (!amountInput) return;
-
-      const amount = sanitizeInput(amountInput, { min: 0, max: 999 });
-      const checkedRadio = document.querySelector('input[name="attackTeamRadio"]:checked');
-
-      if (!checkedRadio) {
-        showMessage('⚠️ 尚未選擇隊伍', '請先選擇一個要出擊的騎士團。', 'fail', 3500);
-        return;
-      }
-      if (amount <= 0) {
-        amountInput.classList.add('input-invalid');
-        showMessage('⚠️ 輸入無效', '請輸入大於 0 的傷害數值。', 'fail', 3500);
-        return;
-      }
-
-      const teamIndex = parseInt(checkedRadio.value, 10) - 1;
-      const team = teams[teamIndex];
-      if (!team) return;
-
-      dragonHp = Math.max(0, dragonHp - amount);
-      team.totalDamage += amount;
-
-      updateDragonHpUI();
-      updateTeamCardsUI();
-      closeAttackModal();
-
-      const attackMsg = `第 ${teamIndex + 1} 騎士團對巨龍造成了 ${amount} 點傷害！（累積傷害：${team.totalDamage} HP，巨龍剩餘：${dragonHp} HP）`;
-      showMessage('🗡️ 指定隊伍攻擊', attackMsg, 'battle', 4500);
-      addHistoryLog('🗡️ 指定隊伍攻擊', attackMsg);
-    }
-
-    /* ===== 事件17：掠奪威脅結算 =====
-       ✨戰術狀態與事件控制面板裡有一個「事件17：掠奪威脅」勾選區塊（每隊一個框）。
-       勾選代表該隊被巨龍鎖定為本次事件目標，結算時會直接讀取該隊卡片上
-       原本的「擲骰數值」欄位（跟平常回合結算比點數完全同一套介面／欄位），
-       用一般戰鬥規則計算：溢出傷害 = max(0, 17 - 防禦點數)。
-       未勾選的隊伍完全不受影響、不計算。若某隊要改用「損失1個道具」，
-       主持人不要勾選該隊，直接口頭處理、於歷史紀錄中手動註記即可。 */
-    function resolveLoot17() {
-      const logLines = [];
-
-      for (let i = 1; i <= 6; i++) {
-        const box = safeGet(`loot17-${i}`);
-        if (!box || !box.checked) continue;
-
-        const team = teams[i - 1];
-        if (!team) continue;
-
-        const defVal = getTeamInputValue(i);
-        const overflowDmg = Math.max(0, 22 - defVal);
-        const prevHp = team.hp;
-
-        if (overflowDmg > 0) {
-          team.hp = Math.max(0, team.hp - overflowDmg);
-          logLines.push(`• 第 ${i} 隊防禦 ${defVal}，承受溢出傷害 ${overflowDmg} HP (剩餘 HP: ${team.hp})`);
-          if (team.hp === 0 && prevHp > 0) {
-            team.recoveryRoundsLeft = 2;
-            logLines.push(`  🚨 第 ${i} 隊 HP 降為 0，進入瀕死狀態！(需 2 回合恢復)`);
-          }
-        } else {
-          logLines.push(`• 第 ${i} 隊防禦 ${defVal}，完美抵擋 22 點攻擊！`);
-        }
-
-        const boardInput = safeGet(`input-${i}`);
-        if (boardInput) boardInput.value = 0;
-        box.checked = false;
-      }
-
-      updateTeamCardsUI();
-
-      if (logLines.length === 0) {
-        showMessage('💰 掠奪威脅結算', '目前沒有任何隊伍勾選「事件17：掠奪威脅」目標，本次未做任何結算。', 'info', 3500);
-        return;
-      }
-
-      const summary = logLines.join('\n');
-      showMessage('💰 掠奪威脅結算（事件 17）', summary, 'battle', 7000);
-      addHistoryLog('💰 掠奪威脅結算（事件 17）', summary);
-    }
-
-    function updateDragonHpUI() {
-      const percent = (dragonHp / dragonMaxHp) * 100;
-      const hpBar = safeGet('hpBar');
-      const hpText = safeGet('hpText');
-      if (hpBar) hpBar.style.width = `${percent}%`;
-      if (hpText) hpText.textContent = `生命值：${dragonHp} / ${dragonMaxHp} HP`;
-
-      if (dragonHp <= 0 && !endingShown) {
-        showEndingScreen(false);
-      }
-    }
-
-    /* ===== 戰役結束畫面 ===== */
-    let endingShown = false;
-    const teamNames = ['第一騎士團', '第二騎士團', '第三騎士團', '第四騎士團', '第五騎士團', '第六騎士團'];
-
-    function showEndingScreen(manual) {
-      endingShown = true;
-
-      const emblem = safeGet('endingEmblem');
-      const title = safeGet('endingTitle');
-      const subtitle = safeGet('endingSubtitle');
-      const dragonDefeated = dragonHp <= 0;
-
-      if (emblem) emblem.textContent = dragonDefeated ? '🐉' : '⏳';
-      if (title) title.textContent = dragonDefeated
-        ? '巨龍殞落！騎士團的榮耀勝利'
-        : '戰役提前結算';
-      if (subtitle) subtitle.textContent = dragonDefeated
-        ? '遠古紅龍轟然倒下，壢中大陸再次迎來和平的曙光……'
-        : `巨龍尚有 ${dragonHp} / ${dragonMaxHp} HP，主持人已提前結算本場戰役戰功。`;
-
-      const roundsEl = safeGet('endingRounds');
-      if (roundsEl) roundsEl.textContent = `第 ${currentRound} 回合`;
-
-      const totalDmg = teams.reduce((sum, t) => sum + t.totalDamage, 0);
-      const totalDmgEl = safeGet('endingTotalDmg');
-      if (totalDmgEl) totalDmgEl.textContent = `${totalDmg} HP`;
-
-      const ranked = teams
-        .map((t, idx) => ({ ...t, index: idx }))
-        .sort((a, b) => b.totalDamage - a.totalDamage);
-
-      const mvpEl = safeGet('endingMvp');
-      if (mvpEl) {
-        mvpEl.textContent = ranked.length && ranked[0].totalDamage > 0
-          ? teamNames[ranked[0].index]
-          : '暫無';
-      }
-
-      const medals = ['🥇', '🥈', '🥉'];
-      const listEl = safeGet('endingRankList');
-      if (listEl) {
-        listEl.innerHTML = ranked.map((t, rank) => {
-          const downed = t.hp === 0;
-          const statusText = downed
-            ? (t.recoveryRoundsLeft > 0 ? `💀 瀕死（恢復倒數 ${t.recoveryRoundsLeft} 回合）` : `💀 瀕死`)
-            : `❤️ 存活（HP: ${t.hp}/${t.maxHp}）`;
-          const medal = medals[rank] || `#${rank + 1}`;
-          return `
-            <div class="ending-rank-item ${rank === 0 ? 'rank-1' : ''} ${downed ? 'status-downed-row' : ''}">
-              <div class="ending-rank-medal">${medal}</div>
-              <div>
-                <div class="ending-rank-name">${teamNames[t.index]}</div>
-                <div class="ending-rank-status">${statusText}</div>
-              </div>
-              <div class="ending-rank-dmg">${t.totalDamage} HP</div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      const overlay = safeGet('endingOverlay');
-      if (overlay) overlay.classList.add('active');
-
-      addHistoryLog(
-        dragonDefeated ? '🏆 戰役結束：巨龍已被擊敗' : '🏆 戰役提前結算',
-        `第 ${currentRound} 回合，全隊總傷害 ${totalDmg} HP。`
-      );
-    }
-
-    function closeEndingScreen() {
-      const overlay = safeGet('endingOverlay');
-      if (overlay) overlay.classList.remove('active');
-    }
-
-    // 統一讀取第 i 隊輸入框數值，內含空值檢查與防呆
-    function getTeamInputValue(i) {
-      const input = safeGet(`input-${i}`);
-      if (!input) return 0;
-      return sanitizeInput(input, { min: 0, max: 999 });
-    }
-
-    function checkTotalSum65() {
-      let total = 0;
-      for (let i = 1; i <= 6; i++) {
-        total += getTeamInputValue(i);
-      }
-
-      if (total > 80) {
-        const passMsg = `全場六隊點數總和為【${total} 點】（超過 80 點），全體安全過關！`;
-        showMessage('🎉 檢定成功', passMsg, 'success', 5000);
-        addHistoryLog('🎲 檢定全場點數 >80', `✅ ${passMsg}`);
-      } else {
-        for (let i = 0; i < 6; i++) {
-          if (teams[i].hp > 0) {
-            teams[i].hp = 0;
-            teams[i].recoveryRoundsLeft = 2;
-          }
-        }
-        updateTeamCardsUI();
-        const failMsg = `全場六隊點數總和僅為【${total} 點】（未超過 80 點）！\n每個小隊懲罰死去一顆骰子，全體騎士團進入瀕死狀態（需 2 回合恢復）！`;
-        showMessage('🚨 檢定失敗', failMsg, 'fail', 6500);
-        addHistoryLog('🎲 檢定全場點數 >80', `❌ ${failMsg}`);
-      }
-
-      // 檢定用掉的點數已結算完畢，清空輸入框，避免舊數值被下次「結算本回合」誤用
-      for (let i = 1; i <= 6; i++) {
-        const input = safeGet(`input-${i}`);
-        if (input) input.value = 0;
-      }
-    }
-
-    function togglePhase() {
-      isDragonAttacking = !isDragonAttacking;
-      updatePhaseUI();
-    }
-
-    function updatePhaseUI() {
-      const banner = safeGet('phaseBanner');
-      const powerLabel = safeGet('powerLabel');
-
-      if (isDragonAttacking) {
-        if (banner) banner.className = "phase-banner phase-attack";
-        if (banner) banner.textContent = `🔥 第 ${currentRound} 回合：巨龍攻擊階段（小隊防禦）`;
-        if (powerLabel) powerLabel.textContent = "巨龍基礎攻擊：";
-        for (let i = 1; i <= 6; i++) { const l = safeGet(`label-${i}`); if (l) l.textContent = "防禦點數："; }
-      } else {
-        if (banner) banner.className = "phase-banner phase-defense";
-        if (banner) banner.textContent = `🛡️ 第 ${currentRound} 回合：巨龍防禦階段（小隊進攻）`;
-        if (powerLabel) powerLabel.textContent = "巨龍基礎防禦：";
-        for (let i = 1; i <= 6; i++) { const l = safeGet(`label-${i}`); if (l) l.textContent = "攻擊點數："; }
-      }
-      updateCalculatedPower();
-    }
-
-    function updateTeamCardsUI() {
-      for (let i = 1; i <= 6; i++) {
-        const team = teams[i - 1];
-        if (!team) continue;
-        const statusTag = safeGet(`status-${i}`);
-        const hpBar = safeGet(`hp-bar-${i}`);
-        const dmgStat = safeGet(`dmg-stat-${i}`);
-
-        if (hpBar) hpBar.style.width = `${Math.max(0, (team.hp / team.maxHp) * 100)}%`;
-        if (dmgStat) {
-          dmgStat.textContent = `⚔️ 累積造成傷害：${team.totalDamage} HP`;
-        }
-
-        if (statusTag) {
-          if (team.hp === 0) {
-            statusTag.className = "team-status-tag status-downed";
-            statusTag.textContent = team.recoveryRoundsLeft > 0
-              ? `💀 瀕死（恢復倒數 ${team.recoveryRoundsLeft} 回合）`
-              : `💀 瀕死 (HP: 0/${team.maxHp})`;
-          } else {
-            statusTag.className = "team-status-tag status-alive";
-            statusTag.textContent = `HP: ${team.hp}/${team.maxHp}`;
-          }
-        }
-      }
-    }
-
-    function settleRound() {
-      const powerInput = safeGet('dragonPowerInput');
-      const basePower = powerInput ? sanitizeInput(powerInput, { min: 0, max: 999 }) : 0;
-      let calculatedPower = basePower;
-      let logMsg = "";
-      const settledRound = currentRound;
-
-      if (isDragonAttacking) {
-        if (activeStatus.atkDebuff) {
-          calculatedPower = Math.round(basePower * 0.75);
-          logMsg += `【📉 龍攻 -25% 生效中！攻擊力自 ${basePower} 降為 ${calculatedPower}】\n`;
-        }
-        logMsg += `【巨龍攻擊階段 - 最終威力 ${calculatedPower}】\n`;
-
-        for (let i = 1; i <= 6; i++) {
-          const team = teams[i - 1];
-          const input = safeGet(`input-${i}`);
-
-          if (team.hp === 0 && team.recoveryRoundsLeft > 0) {
-            team.recoveryRoundsLeft--;
-            if (team.recoveryRoundsLeft <= 0) {
-              team.recoveryRoundsLeft = 0;
-              team.hp = team.maxHp;
-              logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
-            } else {
-              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態（恢復倒數 ${team.recoveryRoundsLeft} 回合），但仍可用剩餘骰子防禦！\n`;
-            }
-          }
-
-          const defVal = getTeamInputValue(i);
-          const overflowDmg = Math.max(0, calculatedPower - defVal);
-
-          if (overflowDmg > 0) {
-            const prevHp = team.hp;
-            team.hp = Math.max(0, team.hp - overflowDmg);
-            logMsg += `• 第 ${i} 隊防禦 ${defVal}，承受溢出傷害 ${overflowDmg} HP (剩餘 HP: ${team.hp})\n`;
-            if (team.hp === 0 && prevHp > 0) {
-              team.recoveryRoundsLeft = 2;
-              logMsg += `  🚨 第 ${i} 隊 HP 降為 0，進入瀕死狀態！(需 2 回合恢復)\n`;
-            }
-          } else {
-            logMsg += `• 第 ${i} 隊防禦 ${defVal}，完美抵擋！\n`;
-          }
-          if (input) input.value = 0;
-        }
-
-        activeStatus.atkDebuff = false;
-
-      } else {
-        if (activeStatus.defDebuff) {
-          calculatedPower = Math.round(basePower * 0.75);
-          logMsg += `【🛡️ 龍防 -25% 生效中！防禦力自 ${basePower} 降為 ${calculatedPower}】\n`;
-        }
-        if (activeStatus.pierce) {
-          calculatedPower = 0;
-          logMsg += `【💥 直傷破防模式！無視巨龍防禦】\n`;
-        }
-
-        logMsg += `【巨龍防禦階段 - 最終防禦 ${calculatedPower}】\n`;
-        let totalOverflowToDragon = 0;
-
-        for (let i = 1; i <= 6; i++) {
-          const team = teams[i - 1];
-          const input = safeGet(`input-${i}`);
-
-          if (team.hp === 0 && team.recoveryRoundsLeft > 0) {
-            team.recoveryRoundsLeft--;
-            if (team.recoveryRoundsLeft <= 0) {
-              team.recoveryRoundsLeft = 0;
-              team.hp = team.maxHp;
-              logMsg += `• ✨ 第 ${i} 隊已完成瀕死恢復，重返戰場（滿血 ${team.maxHp} HP）！\n`;
-            } else {
-              logMsg += `• 💀 第 ${i} 隊仍處於瀕死狀態（恢復倒數 ${team.recoveryRoundsLeft} 回合），但仍可用剩餘骰子出擊！\n`;
-            }
-          }
-
-          const atkVal = getTeamInputValue(i);
-          const overflowDmg = Math.max(0, atkVal - calculatedPower);
-
-          if (overflowDmg > 0) {
-            totalOverflowToDragon += overflowDmg;
-            team.totalDamage += overflowDmg;
-            logMsg += `• 第 ${i} 隊攻擊 ${atkVal}，造成溢出傷害 ${overflowDmg} HP！（累積 ${team.totalDamage} HP）\n`;
-          } else {
-            logMsg += `• 第 ${i} 隊攻擊 ${atkVal}，未突破護盾。\n`;
-          }
-          if (input) input.value = 0;
-        }
-
-        dragonHp = Math.max(0, dragonHp - totalOverflowToDragon);
-        logMsg += `🔥 巨龍本輪共承受 ${totalOverflowToDragon} 點總溢出傷害！\n`;
-
-        activeStatus.defDebuff = false;
-        activeStatus.pierce = false;
-      }
-
-      updateDragonHpUI();
-      currentRound++;
-      isDragonAttacking = !isDragonAttacking;
-
-      if (powerInput) {
-        powerInput.value = 0;
-      }
-      updateCalculatedPower();
-
-      showMessage(`⚔️ 第 ${settledRound} 回合結算報告`, logMsg.trim(), 'battle', 10000);
-      addHistoryLog(`⚔️ 第 ${settledRound} 回合結算`, logMsg.trim());
-
-      updateStatusUI();
-      updatePhaseUI();
-      updateTeamCardsUI();
-    }
-
-    updateStatusUI();
-    updatePhaseUI();
-    updateTeamCardsUI();
-    renderHistoryList();
-  </script>
 
   <div class="ending-overlay" id="endingOverlay">
     <div class="ending-box">
@@ -2307,13 +816,488 @@
         </div>
       </div>
 
-      <div class="ending-rank-title">⚔️ 戰功排行榜 ⚔️</div>
-      <div class="ending-rank-list" id="endingRankList"></div>
-
-      <div class="ending-actions">
-        <button class="btn-ending-close" onclick="closeEndingScreen()">返回戰術盤</button>
-      </div>
+      <button class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('endingOverlay')">
+        返回戰術盤
+      </button>
     </div>
   </div>
+
+  <script>
+    // --- GAME DATA STRUCTURES ---
+    const MAX_BOSS_HP = 400;
+    const MAX_TEAM_HP = 20;
+
+    let gameState = {
+      round: 1,
+      bossHp: 400,
+      phase: 'defense', // 'attack' (Odd = Boss attacks, Teams roll defense) | 'defense' (Even = Boss defends, Teams roll attack)
+      currentD20: null,
+      bossPower: 10, // Dynamic Defense DC or Attack Power
+      modifiers: {
+        defReduction: false, // Event 10 (-25% Def)
+        atkReduction: false, // Event 11 (-25% Atk)
+        armorPiercing: false, // Event 12 (Direct HP damage)
+        disableItems: false,  // Event 13
+        fieldCheckPassed: true // Event 15 (>80 check)
+      },
+      teams: [
+        { id: 1, name: '第一小隊', hp: 20, maxHp: 20, roll: 0, totalDmg: 0 },
+        { id: 2, name: '第二小隊', hp: 20, maxHp: 20, roll: 0, totalDmg: 0 },
+        { id: 3, name: '第三小隊', hp: 20, maxHp: 20, roll: 0, totalDmg: 0 },
+        { id: 4, name: '第四小隊', hp: 20, maxHp: 20, roll: 0, totalDmg: 0 },
+        { id: 5, name: '第五小隊', hp: 20, maxHp: 20, roll: 0, totalDmg: 0 },
+        { id: 6, name: '第六小隊', hp: 20, maxHp: 20, roll: 0, totalDmg: 0 }
+      ],
+      history: [],
+      targetTeamForEv17: null,
+      actionModalType: 'heal'
+    };
+
+    // --- D20 EVENTS DEFINITION (Without Jumping Jacks) ---
+    const d20Events = {
+      1: { type: 'odd', power: 20, name: '烈焰吐息 (奇數 1)', desc: '巨龍攻擊力為 20 點。小隊需進行防禦擲骰。' },
+      2: { type: 'even', power: 16, name: '龍鱗壁壘 (偶數 2)', desc: '巨龍防禦力為 16 點。小隊需進行攻擊擲骰。' },
+      3: { type: 'odd', power: 18, name: '巨尾掃擊 (奇數 3)', desc: '巨龍攻擊力為 18 點。小隊需進行防禦擲骰。' },
+      4: { type: 'even', power: 14, name: '堅硬龍皮 (偶數 4)', desc: '巨龍防禦力為 14 點。小隊需進行攻擊擲骰。' },
+      5: { type: 'odd', power: 16, name: '粉碎爪擊 (奇數 5)', desc: '巨龍攻擊力為 16 點。小隊需進行防禦擲骰。' },
+      6: { type: 'even', power: 12, name: '龍威防護 (偶數 6)', desc: '巨龍防禦力為 12 點。小隊需進行攻擊擲骰。' },
+      7: { type: 'odd', power: 14, name: '龍吼衝擊 (奇數 7)', desc: '巨龍攻擊力為 14 點。小隊需進行防禦擲骰。' },
+      8: { type: 'even', power: 10, name: '基礎防禦 (偶數 8)', desc: '巨龍防禦力為 10 點。小隊需進行攻擊擲骰。' },
+      9: { type: 'odd', power: 14, name: '黑市交易 (奇數 9)', desc: '隊伍可向黑市商人尋求戰略物資支援，巨龍攻擊力為 14 點。' },
+      10: { type: 'even', power: 10, name: '防禦破綻 (偶數 10)', desc: '巨龍防禦力降低 25% (基本DC以10點計算，結算時給予額外增傷)。' },
+      11: { type: 'odd', power: 14, name: '虛弱龍吼 (奇數 11)', desc: '巨龍攻擊力降低 25% (基本攻擊以14點計算，結算時扣減傷害)。' },
+      12: { type: 'even', power: 12, name: '破甲良機 (偶數 12)', desc: '本回合玩家攻擊無視巨龍基礎護甲，造成直接傷害！' },
+      13: { type: 'odd', power: 15, name: '封印詛咒 (奇數 13)', desc: '本回合禁用所有輔助道具與技能，巨龍攻擊力為 15 點。' },
+      14: { type: 'even', power: 8,  name: '虛弱暴露 (偶數 14)', desc: '巨龍露出嚴重破綻！防禦力僅 8 點。' },
+      15: { type: 'odd', power: 16, name: '全場總檢定 (奇數 15)', desc: '全場小隊點數加總必須 > 80 點，否則全員受到額外衝擊傷害！' },
+      16: { type: 'even', power: 10, name: '標準防禦 (偶數 16)', desc: '巨龍防禦力為 10 點。小隊需進行攻擊擲骰。' },
+      17: { type: 'odd', power: 0,  name: '狙擊指定小隊 (奇數 17)', desc: '巨龍發動精準打擊！將直接對指定小隊造成傷害。' },
+      18: { type: 'even', power: 12, name: '龍血再生 (偶數 18)', desc: '巨龍防禦力 12 點，並當場恢復 50 點生命值！' },
+      19: { type: 'odd', power: 15, name: '狂暴俯衝 (奇數 19)', desc: '巨龍攻擊力為 15 點。小隊需進行防禦擲骰。' },
+      20: { type: 'even', power: 12, name: '終極防禦 (偶數 20)', desc: '巨龍防禦力為 12 點。小隊需進行攻擊擲骰。' }
+    };
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      renderTeamCards();
+      updateStatusUI();
+    };
+
+    // --- UI RENDERING FUNCTIONS ---
+    function renderTeamCards() {
+      const grid = document.getElementById('teamsGrid');
+      grid.innerHTML = '';
+
+      gameState.teams.forEach(team => {
+        const hpPercent = Math.max(0, Math.min(100, (team.hp / team.maxHp) * 100));
+        const isDead = team.hp <= 0;
+
+        const card = document.createElement('div');
+        card.className = `team-card ${isDead ? 'eliminated' : ''}`;
+        card.id = `team-card-${team.id}`;
+
+        card.innerHTML = `
+          <div class="team-card-header">
+            <span class="team-name">${team.name}</span>
+            <span class="team-hp-badge" style="color: ${isDead ? '#ef4444' : '#22c55e'};">
+              ${isDead ? '💀 陣亡' : `❤️ ${team.hp} / ${team.maxHp}`}
+            </span>
+          </div>
+
+          <div class="team-hp-bar">
+            <div class="team-hp-fill" style="width: ${hpPercent}%; background: ${hpPercent < 30 ? '#ef4444' : '#22c55e'};"></div>
+          </div>
+
+          <div class="team-input-group">
+            <label for="roll-input-${team.id}">
+              ${gameState.phase === 'defense' ? '⚔️ 攻擊點數:' : '🛡️ 防禦點數:'}
+            </label>
+            <input type="number" id="roll-input-${team.id}" value="${team.roll}" min="0" max="100" 
+                   ${isDead ? 'disabled' : ''} onchange="updateTeamRoll(${team.id}, this.value)">
+          </div>
+
+          <div class="team-stats">
+            <span>累積輸出: <strong>${team.totalDmg}</strong> DMG</span>
+            <span>狀態: <strong>${isDead ? '無法行動' : '正常戰鬥'}</strong></span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function updateStatusUI() {
+      // Boss HP
+      const bossHpPct = Math.max(0, Math.min(100, (gameState.bossHp / MAX_BOSS_HP) * 100));
+      document.getElementById('bossHpText').innerText = `${gameState.bossHp} / ${MAX_BOSS_HP}`;
+      document.getElementById('bossHpBar').style.width = `${bossHpPct}%`;
+
+      // Boss Status text
+      const statusEl = document.getElementById('bossStatusText');
+      if (gameState.bossHp <= 0) {
+        statusEl.innerText = '已戰敗';
+        statusEl.style.color = '#ef4444';
+      } else if (gameState.bossHp < 100) {
+        statusEl.innerText = '頻死狂暴';
+        statusEl.style.color = '#ef4444';
+      } else if (gameState.bossHp < 250) {
+        statusEl.innerText = '受傷奮戰';
+        statusEl.style.color = '#f59e0b';
+      } else {
+        statusEl.innerText = '狀態良好';
+        statusEl.style.color = '#22c55e';
+      }
+
+      // Round & Power
+      document.getElementById('roundText').innerText = gameState.round;
+      document.getElementById('bossPowerValue').innerText = gameState.bossPower;
+      
+      // Phase Badge & Power Label
+      const badge = document.getElementById('phaseBadge');
+      const powerLabel = document.getElementById('powerLabel');
+
+      if (gameState.phase === 'attack') {
+        badge.className = 'phase-badge phase-attack';
+        badge.innerText = '🔥 巨龍攻擊階段';
+        powerLabel.innerText = '當前巨龍攻擊力';
+      } else {
+        badge.className = 'phase-badge phase-defense';
+        badge.innerText = '🛡️ 巨龍防禦階段';
+        powerLabel.innerText = '當前防禦需求 (DC)';
+      }
+
+      // Modifiers List
+      const modContainer = document.getElementById('modifiersList');
+      modContainer.innerHTML = '';
+
+      if (gameState.modifiers.defReduction) {
+        modContainer.innerHTML += `<span class="mod-tag debuff">巨龍防禦 -25%</span>`;
+      }
+      if (gameState.modifiers.atkReduction) {
+        modContainer.innerHTML += `<span class="mod-tag debuff">巨龍攻擊 -25%</span>`;
+      }
+      if (gameState.modifiers.armorPiercing) {
+        modContainer.innerHTML += `<span class="mod-tag">破甲傷害模式</span>`;
+      }
+      if (gameState.modifiers.disableItems) {
+        modContainer.innerHTML += `<span class="mod-tag debuff">禁用道具/技能</span>`;
+      }
+      if (gameState.currentD20 === 18) {
+        modContainer.innerHTML += `<span class="mod-tag">巨龍回復 HP</span>`;
+      }
+    }
+
+    // --- EVENT HANDLING & D20 SELECT ---
+    function handleD20Change() {
+      const val = parseInt(document.getElementById('d20Select').value);
+      const card = document.getElementById('eventCard');
+
+      if (isNaN(val) || !d20Events[val]) {
+        card.style.display = 'none';
+        gameState.currentD20 = null;
+        return;
+      }
+
+      const ev = d20Events[val];
+      gameState.currentD20 = val;
+      
+      // Determine Phase
+      if (ev.type === 'odd') {
+        gameState.phase = 'attack';
+      } else {
+        gameState.phase = 'defense';
+      }
+
+      // Special Event Reset & Mechanics
+      resetModifiers();
+
+      if (val === 10) gameState.modifiers.defReduction = true;
+      if (val === 11) gameState.modifiers.atkReduction = true;
+      if (val === 12) gameState.modifiers.armorPiercing = true;
+      if (val === 13) gameState.modifiers.disableItems = true;
+
+      // Event 17 prompt
+      if (val === 17) {
+        openTargetModal();
+      }
+
+      // Set base power
+      gameState.bossPower = ev.power;
+
+      // Update Card UI
+      document.getElementById('eventTitle').innerText = ev.name;
+      document.getElementById('eventDesc').innerText = ev.desc;
+      card.style.display = 'flex';
+
+      updateStatusUI();
+      renderTeamCards();
+    }
+
+    function resetModifiers() {
+      gameState.modifiers.defReduction = false;
+      gameState.modifiers.atkReduction = false;
+      gameState.modifiers.armorPiercing = false;
+      gameState.modifiers.disableItems = false;
+      gameState.modifiers.fieldCheckPassed = true;
+    }
+
+    function updateTeamRoll(teamId, val) {
+      const team = gameState.teams.find(t => t.id === teamId);
+      if (team) {
+        team.roll = parseInt(val) || 0;
+      }
+    }
+
+    // --- ROUND SETTLEMENT LOGIC ---
+    function settleRound() {
+      if (!gameState.currentD20) {
+        alert('請先選擇本回合的 D20 骰子點數！');
+        return;
+      }
+
+      const ev = d20Events[gameState.currentD20];
+      let logText = `【第 ${gameState.round} 回合結算 - D20: ${gameState.currentD20}】\n`;
+
+      if (gameState.phase === 'defense') {
+        // --- EVEN: TEAMS ATTACK BOSS ---
+        let totalRoundDamage = 0;
+        let effectiveDC = ev.power;
+
+        if (gameState.modifiers.defReduction) {
+          effectiveDC = Math.round(effectiveDC * 0.75);
+        }
+
+        logText += `🛡️ 巨龍防禦 DC: ${effectiveDC}\n`;
+
+        // Event 18: Boss Heal
+        if (gameState.currentD20 === 18) {
+          const healAmt = 50;
+          gameState.bossHp = Math.min(MAX_BOSS_HP, gameState.bossHp + healAmt);
+          logText += `💚 巨龍發動【龍血再生】，恢復了 ${healAmt} 點生命值！\n`;
+        }
+
+        gameState.teams.forEach(team => {
+          if (team.hp > 0) {
+            let dmg = 0;
+            if (gameState.modifiers.armorPiercing) {
+              // Direct damage
+              dmg = team.roll;
+            } else {
+              // Standard damage formula: Roll - DC
+              if (team.roll > effectiveDC) {
+                dmg = team.roll - effectiveDC;
+              }
+            }
+
+            if (dmg > 0) {
+              team.totalDmg += dmg;
+              totalRoundDamage += dmg;
+              logText += `⚔️ ${team.name} (點數 ${team.roll}) 對巨龍造成 ${dmg} 點傷害！\n`;
+            } else {
+              logText += `🛡️ ${team.name} (點數 ${team.roll}) 未能突破巨龍防禦。\n`;
+            }
+          }
+        });
+
+        // Deduct Boss HP
+        gameState.bossHp = Math.max(0, gameState.bossHp - totalRoundDamage);
+        logText += `💥 本回合騎士團共對巨龍造成 ${totalRoundDamage} 點傷害！`;
+
+      } else {
+        // --- ODD: BOSS ATTACKS TEAMS ---
+        let effectiveAtk = ev.power;
+        if (gameState.modifiers.atkReduction) {
+          effectiveAtk = Math.round(effectiveAtk * 0.75);
+        }
+
+        logText += `🔥 巨龍攻擊力: ${effectiveAtk}\n`;
+
+        // Event 15: Field Check (>80)
+        let totalTeamRolls = 0;
+        if (gameState.currentD20 === 15) {
+          gameState.teams.forEach(t => { if (t.hp > 0) totalTeamRolls += t.roll; });
+          if (totalTeamRolls <= 80) {
+            logText += `⚠️ 全場點數總和 (${totalTeamRolls}) 未達 80 點！巨龍咆哮造成全體額外 2 點穿透傷害！\n`;
+          } else {
+            logText += `✨ 全場點數總和 (${totalTeamRolls}) 成功突破 80 點！化解了巨龍衝擊！\n`;
+          }
+        }
+
+        // Event 17: Targeted Attack
+        if (gameState.currentD20 === 17 && gameState.targetTeamForEv17) {
+          const target = gameState.teams.find(t => t.id === gameState.targetTeamForEv17);
+          if (target && target.hp > 0) {
+            const targetedDmg = 8;
+            target.hp = Math.max(0, target.hp - targetedDmg);
+            logText += `🎯 巨龍猛烈狙擊 ${target.name}，造成 ${targetedDmg} 點直接扣血！\n`;
+          }
+        }
+
+        // Standard Squad Defense Check
+        gameState.teams.forEach(team => {
+          if (team.hp > 0) {
+            let dmgToTeam = 0;
+
+            // Apply Event 15 penalty if failed
+            if (gameState.currentD20 === 15 && totalTeamRolls <= 80) {
+              dmgToTeam += 2;
+            }
+
+            if (team.roll < effectiveAtk) {
+              const diff = effectiveAtk - team.roll;
+              dmgToTeam += diff;
+              team.hp = Math.max(0, team.hp - dmgToTeam);
+              logText += `💥 ${team.name} 防禦失敗 (點數 ${team.roll})，受到 ${dmgToTeam} 點傷害！(剩餘 HP: ${team.hp})\n`;
+            } else {
+              if (dmgToTeam > 0) {
+                team.hp = Math.max(0, team.hp - dmgToTeam);
+                logText += `🛡️ ${team.name} 防禦成功 (點數 ${team.roll})，但仍受到機制額外傷害 ${dmgToTeam} 點。\n`;
+              } else {
+                logText += `🛡️ ${team.name} 防禦成功 (點數 ${team.roll})，完美抵禦巨龍攻擊！\n`;
+              }
+            }
+          }
+        });
+      }
+
+      // Add Log
+      addHistoryLog(`第 ${gameState.round} 回合`, logText);
+
+      // Check Victory / Defeat
+      if (gameState.bossHp <= 0) {
+        triggerEndGame(true);
+      } else {
+        // Increment round
+        gameState.round++;
+        // Reset rolls for next round
+        gameState.teams.forEach(t => t.roll = 0);
+      }
+
+      updateStatusUI();
+      renderTeamCards();
+    }
+
+    // --- MODAL CONTROLS ---
+    function openTargetModal() {
+      const modal = document.getElementById('targetModal');
+      const container = document.getElementById('targetSelectList');
+      container.innerHTML = '';
+
+      gameState.teams.forEach(t => {
+        if (t.hp > 0) {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-secondary';
+          btn.innerText = `🎯 指定 ${t.name} (HP: ${t.hp})`;
+          btn.onclick = () => {
+            gameState.targetTeamForEv17 = t.id;
+            closeModal('targetModal');
+            alert(`已指定 ${t.name} 作為巨龍本回合狙擊目標！`);
+          };
+          container.appendChild(btn);
+        }
+      });
+
+      modal.classList.add('active');
+    }
+
+    function openHealModal() {
+      gameState.actionModalType = 'heal';
+      document.getElementById('actionModalTitle').innerText = '💖 小隊生命值治療/增加';
+      document.getElementById('actionValueLabel').innerText = '治療量 (HP)：';
+      populateTeamSelect();
+      document.getElementById('actionModal').classList.add('active');
+    }
+
+    function openDirectDmgModal() {
+      gameState.actionModalType = 'damage';
+      document.getElementById('actionModalTitle').innerText = '💥 小隊直接扣血/傷害';
+      document.getElementById('actionValueLabel').innerText = '傷害量 (HP)：';
+      populateTeamSelect();
+      document.getElementById('actionModal').classList.add('active');
+    }
+
+    function populateTeamSelect() {
+      const select = document.getElementById('actionTeamSelect');
+      select.innerHTML = '';
+      gameState.teams.forEach(t => {
+        select.innerHTML += `<option value="${t.id}">${t.name} (HP: ${t.hp})</option>`;
+      });
+    }
+
+    function confirmActionModal() {
+      const teamId = parseInt(document.getElementById('actionTeamSelect').value);
+      const val = parseInt(document.getElementById('actionValueInput').value) || 0;
+      const team = gameState.teams.find(t => t.id === teamId);
+
+      if (team) {
+        if (gameState.actionModalType === 'heal') {
+          team.hp = Math.min(team.maxHp, team.hp + val);
+          addHistoryLog('系統操作', `💖 GM 為 ${team.name} 恢復了 ${val} 點生命值。(現有 HP: ${team.hp})`);
+        } else {
+          team.hp = Math.max(0, team.hp - val);
+          addHistoryLog('系統操作', `💥 GM 對 ${team.name} 造成了 ${val} 點直接傷害。(現有 HP: ${team.hp})`);
+        }
+      }
+
+      closeModal('actionModal');
+      renderTeamCards();
+      updateStatusUI();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function addHistoryLog(tag, message) {
+      const historyList = document.getElementById('historyList');
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `<strong>[${tag}]</strong><br>${message.replace(/\n/g, '<br>')}`;
+      historyList.prepend(item);
+    }
+
+    function triggerEndGame(isVictory) {
+      const overlay = document.getElementById('endingOverlay');
+      document.getElementById('endingRounds').innerText = gameState.round;
+      
+      let totalDmg = 0;
+      let mvpTeam = gameState.teams[0];
+
+      gameState.teams.forEach(t => {
+        totalDmg += t.totalDmg;
+        if (t.totalDmg > mvpTeam.totalDmg) {
+          mvpTeam = t;
+        }
+      });
+
+      document.getElementById('endingTotalDmg').innerText = `${totalDmg} DMG`;
+      document.getElementById('endingMvp').innerText = `${mvpTeam.name} (${mvpTeam.totalDmg} 傷害)`;
+
+      overlay.classList.add('active');
+    }
+
+    function resetBattle() {
+      if (confirm('確定要重置整個戰局嗎？所有分數與歷史紀錄將清空。')) {
+        gameState.round = 1;
+        gameState.bossHp = MAX_BOSS_HP;
+        gameState.phase = 'defense';
+        gameState.currentD20 = null;
+        gameState.bossPower = 10;
+        resetModifiers();
+
+        gameState.teams.forEach(t => {
+          t.hp = MAX_TEAM_HP;
+          t.roll = 0;
+          t.totalDmg = 0;
+        });
+
+        document.getElementById('d20Select').value = '';
+        document.getElementById('eventCard').style.display = 'none';
+        document.getElementById('historyList').innerHTML = '<div class="history-item">戰鬥已重置，巨龍重新降臨！</div>';
+
+        updateStatusUI();
+        renderTeamCards();
+      }
+    }
+  </script>
 </body>
 </html>
